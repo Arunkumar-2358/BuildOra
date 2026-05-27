@@ -2,12 +2,12 @@ import { MessageCircle, Star } from "lucide-react";
 import { Button } from "./Button";
 
 export const ContractorCard = ({ contractor, onChat }) => (
-  <div className="rounded-lg border border-ink/10 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-soft">
+  <div className="group premium-card rounded-lg p-5 transition hover:-translate-y-1 hover:shadow-glow">
     <div className="flex items-start gap-4">
       <img
         src={contractor.profileImage?.url || `https://ui-avatars.com/api/?name=${contractor.name}&background=3f6f5a&color=fff`}
         alt={contractor.name}
-        className="h-14 w-14 rounded-lg object-cover"
+        className="h-14 w-14 rounded-lg object-cover shadow-md"
       />
       <div className="min-w-0 flex-1">
         <h3 className="truncate text-base font-bold text-ink">{contractor.contractorProfile?.businessName || contractor.name}</h3>
@@ -23,10 +23,14 @@ export const ContractorCard = ({ contractor, onChat }) => (
     </p>
     <div className="mt-4 flex flex-wrap gap-2">
       {(contractor.contractorProfile?.services || ["construction", "interior"]).slice(0, 3).map((service) => (
-        <span key={service} className="rounded-full bg-mist px-3 py-1 text-xs font-bold text-moss">
+        <span key={service} className="rounded-full bg-mist px-3 py-1 text-xs font-bold capitalize text-moss">
           {service}
         </span>
       ))}
+    </div>
+    <div className="mt-5 grid grid-cols-2 gap-2 border-t border-ink/10 pt-4 text-xs font-bold text-ink/55">
+      <span>12 active leads</span>
+      <span className="text-right">Verified profile</span>
     </div>
     {onChat && (
       <Button onClick={() => onChat(contractor)} className="mt-5 w-full" variant="secondary">

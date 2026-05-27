@@ -1,11 +1,11 @@
-import { Hammer, LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import { Building2, LogOut, Menu, Moon, Sparkles, Sun, X } from "lucide-react";
 import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "./Button";
 
 const linkClass = ({ isActive }) =>
-  `rounded-lg px-3 py-2 text-sm font-semibold transition ${isActive ? "bg-ink text-white" : "text-ink/70 hover:bg-ink/5 hover:text-ink"}`;
+  `rounded-lg px-3 py-2 text-sm font-semibold transition ${isActive ? "bg-ink text-white shadow-sm" : "text-ink/70 hover:bg-ink/5 hover:text-ink"}`;
 
 export const Layout = () => {
   const { user, logout } = useAuth();
@@ -32,13 +32,13 @@ export const Layout = () => {
 
   return (
     <div className={dark ? "dark-shell min-h-screen" : "min-h-screen"}>
-      <header className="sticky top-0 z-40 border-b border-ink/10 bg-white/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-ink/10 bg-white/90 backdrop-blur-2xl">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-ink">
-            <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white">
-              <Hammer className="h-5 w-5" />
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white shadow-lg shadow-ink/20">
+              <Building2 className="h-5 w-5" />
             </span>
-            Buildora
+            <span>Buildora</span>
           </Link>
           <div className="hidden items-center gap-2 md:flex">
             {links.map(([label, href]) =>
@@ -63,7 +63,13 @@ export const Layout = () => {
                 Logout
               </Button>
             ) : (
-              <Button as={Link} to="/login">Login</Button>
+              <>
+                <Button as={Link} to="/login" variant="secondary">Login</Button>
+                <Button as={Link} to="/register">
+                  <Sparkles className="h-4 w-4" />
+                  Get started
+                </Button>
+              </>
             )}
           </div>
           <button className="rounded-lg p-2 md:hidden" onClick={() => setOpen((value) => !value)} aria-label="Menu">

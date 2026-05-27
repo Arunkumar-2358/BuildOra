@@ -1,4 +1,4 @@
-import { Hammer } from "lucide-react";
+import { BadgeCheck, Building2, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
@@ -38,16 +38,32 @@ export const AuthPage = ({ mode = "login" }) => {
 
   return (
     <main className="mx-auto grid min-h-[calc(100vh-76px)] max-w-6xl items-center gap-10 px-4 py-10 md:grid-cols-2">
-      <section>
-        <div className="mb-6 inline-grid h-14 w-14 place-items-center rounded-lg bg-ink text-white">
-          <Hammer />
+      <section className="rounded-lg bg-ink p-6 text-white shadow-soft md:p-8">
+        <div className="mb-6 inline-grid h-14 w-14 place-items-center rounded-lg bg-white text-ink">
+          <Building2 />
         </div>
-        <h1 className="text-4xl font-extrabold text-ink">{isRegister ? "Create your Buildora account" : "Welcome back to Buildora"}</h1>
-        <p className="mt-4 text-lg leading-8 text-ink/65">
-          Customers post requirements. Contractors find qualified construction and interior leads.
+        <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-bold text-white/70">
+          <Sparkles className="h-4 w-4 text-gold" />
+          Founder-demo ready marketplace
         </p>
+        <h1 className="text-4xl font-extrabold">{isRegister ? "Create your Buildora account" : "Welcome back to Buildora"}</h1>
+        <p className="mt-4 text-lg leading-8 text-white/65">
+          Customers post requirements. Contractors find qualified construction and interior leads with clean bidding and realtime chat.
+        </p>
+        <div className="mt-8 grid gap-3">
+          {[
+            [ShieldCheck, "JWT protected role-based flows"],
+            [BadgeCheck, "Project, bid, profile, and chat modules"],
+            [Sparkles, "Premium UI for investor walkthroughs"]
+          ].map(([Icon, text]) => (
+            <div key={text} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 p-3 text-sm font-bold text-white/75">
+              <Icon className="h-5 w-5 text-gold" />
+              {text}
+            </div>
+          ))}
+        </div>
       </section>
-      <form onSubmit={submit} className="glass rounded-lg p-6 shadow-soft">
+      <form onSubmit={submit} className="premium-card rounded-lg p-6 shadow-soft">
         <div className="grid gap-4">
           {isRegister && <Input label="Name" name="name" value={form.name} onChange={update} required />}
           <Input label="Email" name="email" type="email" value={form.email} onChange={update} required />

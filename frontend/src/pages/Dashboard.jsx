@@ -1,4 +1,4 @@
-import { Briefcase, ClipboardCheck, MessageCircle, Plus } from "lucide-react";
+import { ArrowRight, Briefcase, ClipboardCheck, MessageCircle, Plus, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
@@ -26,17 +26,23 @@ export const Dashboard = () => {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <section className="rounded-lg bg-ink p-6 text-white shadow-soft md:p-8">
+      <section className="mesh-dark overflow-hidden rounded-lg p-6 text-white shadow-soft md:p-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
           <div>
-            <p className="font-semibold text-white/65">{user.role === "customer" ? "Customer dashboard" : "Contractor dashboard"}</p>
-            <h1 className="mt-2 text-3xl font-extrabold">Hello, {user.name}</h1>
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white/75">
+              <Sparkles className="h-4 w-4 text-gold" />
+              {user.role === "customer" ? "Customer command center" : "Contractor growth desk"}
+            </p>
+            <h1 className="mt-4 text-3xl font-extrabold md:text-5xl">Hello, {user.name}</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/65">
+              {user.role === "customer"
+                ? "Track projects, compare quotations, and keep every contractor conversation in one place."
+                : "Find qualified leads, submit sharper quotations, and move deals forward with realtime chat."}
+            </p>
           </div>
-          <Button variant="accent">
-            <Link className="inline-flex items-center gap-2" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
-              <Plus className="h-4 w-4" />
-              {user.role === "customer" ? "Post project" : "Find leads"}
-            </Link>
+          <Button as={Link} to={user.role === "customer" ? "/post-project" : "/browse-projects"} variant="accent" className="px-5 py-3">
+            <Plus className="h-4 w-4" />
+            {user.role === "customer" ? "Post project" : "Find leads"}
           </Button>
         </div>
       </section>
@@ -47,8 +53,10 @@ export const Dashboard = () => {
           [ClipboardCheck, "Bids", bids.length],
           [MessageCircle, "Chats", "Live"]
         ].map(([Icon, label, value]) => (
-          <div key={label} className="rounded-lg border border-ink/10 bg-white p-5">
-            <Icon className="h-7 w-7 text-moss" />
+          <div key={label} className="premium-card rounded-lg p-5">
+            <div className="grid h-11 w-11 place-items-center rounded-lg bg-mist">
+              <Icon className="h-6 w-6 text-moss" />
+            </div>
             <p className="mt-4 text-sm font-semibold text-ink/60">{label}</p>
             <p className="text-3xl font-extrabold text-ink">{value}</p>
           </div>
@@ -58,13 +66,23 @@ export const Dashboard = () => {
       <section className="mt-10">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-2xl font-extrabold text-ink">{user.role === "customer" ? "Your projects" : "Open projects"}</h2>
-          <Link className="text-sm font-bold text-moss" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
-            View all
+          <Link className="inline-flex items-center gap-1 text-sm font-bold text-moss" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
+            View all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => <ProjectCard key={project._id} project={project} />)}
         </div>
+        {!projects.length && (
+          <div className="premium-card rounded-lg p-8 text-center">
+            <p className="text-lg font-extrabold text-ink">
+              {user.role === "customer" ? "No projects yet." : "No open projects loaded yet."}
+            </p>
+            <p className="mt-2 text-sm text-ink/60">
+              {user.role === "customer" ? "Create your first requirement and watch bids arrive here." : "Check the browse page for fresh leads."}
+            </p>
+          </div>
+        )}
       </section>
     </main>
   );

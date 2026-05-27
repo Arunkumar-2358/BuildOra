@@ -8,4 +8,4 @@ backend/.env
 frontend/.env
 backend/package-lock.json
 frontend/package-lock.json
-buildora-preview.png
+buildora-*.png
