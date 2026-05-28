@@ -30,8 +30,8 @@ export const ProjectDetails = () => {
     event.preventDefault();
     setError("");
     try {
-      const { data } = await api.post("/bids", { ...bidForm, project: id });
-      setBids((current) => [data, ...current]);
+      await api.post("/bids", { ...bidForm, project: id });
+      await load();
       setBidForm({ quotationAmount: "", estimatedDuration: "", proposalMessage: "" });
     } catch (err) {
       setError(err.response?.data?.message || "Unable to submit bid");
