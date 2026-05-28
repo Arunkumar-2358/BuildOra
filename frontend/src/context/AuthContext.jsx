@@ -4,11 +4,21 @@ import { disconnectSocket } from "../services/socket";
 
 const AuthContext = createContext(null);
 
+const getStoredUser = () => {
+  const raw = localStorage.getItem("buildora_user");
+  if (!raw || raw === "undefined" || raw === "null") return null;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem("buildora_user");
+    localStorage.removeItem("buildora_token");
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("buildora_user");
-    return stored ? JSON.parse(stored) : null;
-  });
+  const [user, setUser] = useState(getStoredUser);
   const [loading, setLoading] = useState(false);
 
   const persistSession = ({ token, user: nextUser }) => {
