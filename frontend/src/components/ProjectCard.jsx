@@ -5,22 +5,22 @@ import { currency } from "../utils/format";
 export const ProjectCard = ({ project }) => (
   <Link
     to={`/projects/${project._id}`}
-    className="group premium-card block rounded-lg p-5 transition hover:-translate-y-1 hover:shadow-glow"
+    className="group premium-card block rounded-2xl p-5 transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow"
   >
     <div className="mb-4 flex items-start justify-between gap-3">
       <div>
-        <span className="rounded-full bg-mist px-3 py-1 text-xs font-bold capitalize text-moss">
+        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold capitalize text-blue-200">
           {project.category}
         </span>
-        <h3 className="mt-3 text-lg font-bold text-ink transition group-hover:text-moss">{project.title}</h3>
+        <h3 className="mt-3 text-lg font-bold text-slate-100 transition group-hover:text-white">{project.title}</h3>
       </div>
-      <span className="grid h-9 w-9 place-items-center rounded-lg bg-mist transition group-hover:bg-ink">
-        <ArrowRight className="h-5 w-5 text-ink/40 transition group-hover:translate-x-0.5 group-hover:text-white" />
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-800 transition group-hover:bg-primary">
+        <ArrowRight className="h-5 w-5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-white" />
       </span>
     </div>
-    <p className="line-clamp-2 text-sm leading-6 text-ink/65">{project.description}</p>
-    <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-ink/10 pt-4 text-sm text-ink/65">
-      <span className="font-extrabold text-ink">{currency(project.budget)}</span>
+    <p className="line-clamp-2 text-sm leading-6 text-slate-400">{project.description}</p>
+    <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-700/50 pt-4 text-sm text-slate-400">
+      <span className="font-extrabold text-slate-100">{currency(project.budget)}</span>
       <span className="inline-flex items-center gap-1">
         <MapPin className="h-4 w-4" />
         {project.location}

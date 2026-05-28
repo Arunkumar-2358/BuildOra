@@ -41,8 +41,8 @@ export const ProfilePage = () => {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-3xl font-extrabold text-ink">Profile</h1>
-      <form onSubmit={submit} className="mt-6 grid gap-5 rounded-lg border border-ink/10 bg-white p-6 shadow-sm">
+      <h1 className="text-3xl font-extrabold text-slate-100">Profile</h1>
+      <form onSubmit={submit} className="premium-card mt-6 grid gap-5 rounded-2xl p-6 shadow-sm">
         <div className="grid gap-5 md:grid-cols-2">
           <Input label="Name" name="name" value={form.name} onChange={update} />
           <Input label="Phone" name="phone" value={form.phone} onChange={update} />
@@ -61,7 +61,7 @@ export const ProfilePage = () => {
             <Input label="Portfolio images" name="portfolioImages" type="file" accept="image/*" multiple onChange={update} />
           </>
         )}
-        {saved && <p className="rounded-lg bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">Profile updated.</p>}
+        {saved && <p className="rounded-xl bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-300">Profile updated.</p>}
         <Button className="justify-self-start"><Save className="h-4 w-4" /> Save profile</Button>
       </form>
     </main>

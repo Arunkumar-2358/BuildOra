@@ -1,6 +1,7 @@
 import { ArrowRight, Briefcase, ClipboardCheck, MessageCircle, Plus, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { Button } from "../components/Button";
 import { ProjectCard } from "../components/ProjectCard";
 import { useAuth } from "../context/AuthContext";
@@ -10,6 +11,15 @@ export const Dashboard = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [bids, setBids] = useState([]);
+  const chartData = [
+    { name: "Mon", value: 3 },
+    { name: "Tue", value: 7 },
+    { name: "Wed", value: 5 },
+    { name: "Thu", value: 9 },
+    { name: "Fri", value: 8 },
+    { name: "Sat", value: 11 },
+    { name: "Sun", value: 10 }
+  ];
 
   useEffect(() => {
     const load = async () => {
@@ -26,7 +36,7 @@ export const Dashboard = () => {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <section className="mesh-dark overflow-hidden rounded-lg p-6 text-white shadow-soft md:p-8">
+      <section className="premium-card overflow-hidden rounded-2xl p-6 text-white shadow-soft md:p-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white/75">
@@ -40,33 +50,51 @@ export const Dashboard = () => {
                 : "Find qualified leads, submit sharper quotations, and move deals forward with realtime chat."}
             </p>
           </div>
-          <Button as={Link} to={user.role === "customer" ? "/post-project" : "/browse-projects"} variant="accent" className="px-5 py-3">
+          <Button as={Link} to={user.role === "customer" ? "/post-project" : "/browse-projects"} className="px-5 py-3">
             <Plus className="h-4 w-4" />
             {user.role === "customer" ? "Post project" : "Find leads"}
           </Button>
         </div>
       </section>
 
-      <section className="mt-6 grid gap-4 md:grid-cols-3">
+      <section className="mt-6 grid gap-4 md:grid-cols-4">
         {[
           [Briefcase, "Projects", projects.length],
           [ClipboardCheck, "Bids", bids.length],
           [MessageCircle, "Chats", "Live"]
         ].map(([Icon, label, value]) => (
-          <div key={label} className="premium-card rounded-lg p-5">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-mist">
-              <Icon className="h-6 w-6 text-moss" />
+          <div key={label} className="premium-card rounded-2xl p-5">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-800">
+              <Icon className="h-6 w-6 text-blue-300" />
             </div>
-            <p className="mt-4 text-sm font-semibold text-ink/60">{label}</p>
-            <p className="text-3xl font-extrabold text-ink">{value}</p>
+            <p className="mt-4 text-sm font-semibold text-slate-400">{label}</p>
+            <p className="text-3xl font-extrabold text-slate-100">{value}</p>
           </div>
         ))}
+        <div className="premium-card rounded-2xl p-5">
+          <p className="text-sm font-semibold text-slate-400">Weekly momentum</p>
+          <div className="mt-3 h-20">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData}>
+                <defs>
+                  <linearGradient id="growth" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="name" hide />
+                <Tooltip />
+                <Area type="monotone" dataKey="value" stroke="#60A5FA" fillOpacity={1} fill="url(#growth)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </section>
 
       <section className="mt-10">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-2xl font-extrabold text-ink">{user.role === "customer" ? "Your projects" : "Open projects"}</h2>
-          <Link className="inline-flex items-center gap-1 text-sm font-bold text-moss" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
+          <h2 className="text-2xl font-extrabold text-slate-100">{user.role === "customer" ? "Your projects" : "Open projects"}</h2>
+          <Link className="inline-flex items-center gap-1 text-sm font-bold text-blue-300" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
             View all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -74,11 +102,11 @@ export const Dashboard = () => {
           {projects.map((project) => <ProjectCard key={project._id} project={project} />)}
         </div>
         {!projects.length && (
-          <div className="premium-card rounded-lg p-8 text-center">
-            <p className="text-lg font-extrabold text-ink">
+          <div className="premium-card rounded-2xl p-8 text-center">
+            <p className="text-lg font-extrabold text-slate-100">
               {user.role === "customer" ? "No projects yet." : "No open projects loaded yet."}
             </p>
-            <p className="mt-2 text-sm text-ink/60">
+            <p className="mt-2 text-sm text-slate-400">
               {user.role === "customer" ? "Create your first requirement and watch bids arrive here." : "Check the browse page for fresh leads."}
             </p>
           </div>
