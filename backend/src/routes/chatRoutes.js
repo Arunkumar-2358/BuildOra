@@ -1,12 +1,15 @@
 import express from "express";
 import { body } from "express-validator";
-import { getChats, getMessages, startChat } from "../controllers/chatController.js";
+import { getChats, getMessages, startChat, uploadAttachment, uploadVoice } from "../controllers/chatController.js";
 import { protect } from "../middleware/authMiddleware.js";
+import { audioUpload, fileUpload } from "../middleware/uploadMiddleware.js";
 import { validate } from "../middleware/validate.js";
 
 const router = express.Router();
 
 router.get("/", protect, getChats);
+router.post("/voice", protect, audioUpload.single("audio"), uploadVoice);
+router.post("/attachment", protect, fileUpload.single("file"), uploadAttachment);
 router.post(
   "/start",
   protect,

@@ -36,7 +36,7 @@ export const Dashboard = () => {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <section className="premium-card overflow-hidden rounded-2xl p-6 text-white shadow-soft md:p-8">
+      <section className="overflow-hidden rounded-2xl bg-brand-gradient p-6 text-white shadow-glow md:p-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white/75">
@@ -64,15 +64,15 @@ export const Dashboard = () => {
           [MessageCircle, "Chats", "Live"]
         ].map(([Icon, label, value]) => (
           <div key={label} className="premium-card rounded-2xl p-5">
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-800">
-              <Icon className="h-6 w-6 text-blue-300" />
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-surface-2">
+              <Icon className="h-6 w-6 text-accent" />
             </div>
-            <p className="mt-4 text-sm font-semibold text-slate-400">{label}</p>
-            <p className="text-3xl font-extrabold text-slate-100">{value}</p>
+            <p className="mt-4 text-sm font-semibold text-muted">{label}</p>
+            <p className="text-3xl font-extrabold text-content">{value}</p>
           </div>
         ))}
         <div className="premium-card rounded-2xl p-5">
-          <p className="text-sm font-semibold text-slate-400">Weekly momentum</p>
+          <p className="text-sm font-semibold text-muted">Weekly momentum</p>
           <div className="mt-3 h-20">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData}>
@@ -93,8 +93,8 @@ export const Dashboard = () => {
 
       <section className="mt-10">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-2xl font-extrabold text-slate-100">{user.role === "customer" ? "Your projects" : "Open projects"}</h2>
-          <Link className="inline-flex items-center gap-1 text-sm font-bold text-blue-300" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
+          <h2 className="text-2xl font-extrabold text-content">{user.role === "customer" ? "Your projects" : "Open projects"}</h2>
+          <Link className="inline-flex items-center gap-1 text-sm font-bold text-accent" to={user.role === "customer" ? "/post-project" : "/browse-projects"}>
             View all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -103,10 +103,10 @@ export const Dashboard = () => {
         </div>
         {!projects.length && (
           <div className="premium-card rounded-2xl p-8 text-center">
-            <p className="text-lg font-extrabold text-slate-100">
+            <p className="text-lg font-extrabold text-content">
               {user.role === "customer" ? "No projects yet." : "No open projects loaded yet."}
             </p>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-muted">
               {user.role === "customer" ? "Create your first requirement and watch bids arrive here." : "Check the browse page for fresh leads."}
             </p>
           </div>

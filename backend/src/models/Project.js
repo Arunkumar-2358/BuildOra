@@ -16,7 +16,10 @@ const projectSchema = new mongoose.Schema(
     images: [
       {
         url: String,
-        publicId: String
+        publicId: String,
+        mimeType: String,
+        originalName: String,
+        bytes: Number
       }
     ],
     status: {

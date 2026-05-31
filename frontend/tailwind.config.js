@@ -7,14 +7,32 @@ export default {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]
       },
       colors: {
+        // Semantic theme tokens — resolve from CSS variables so the same
+        // utility class adapts to light/dark automatically.
+        base: "rgb(var(--bg) / <alpha-value>)",
+        surface: {
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          2: "rgb(var(--surface-2) / <alpha-value>)",
+          deep: "rgb(var(--surface-deep) / <alpha-value>)"
+        },
+        content: "rgb(var(--content) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        subtle: "rgb(var(--subtle) / <alpha-value>)",
+        line: {
+          DEFAULT: "rgb(var(--line) / <alpha-value>)",
+          strong: "rgb(var(--line-strong) / <alpha-value>)"
+        },
+        accent: "rgb(var(--accent) / <alpha-value>)",
+        success: "rgb(var(--success) / <alpha-value>)",
+
+        // Fixed brand colors (read well on both themes).
         background: "#070B14",
         foreground: "#F8FAFC",
         card: "#0F172A",
-        border: "#1E293B",
-        muted: "#94A3B8",
         primary: "#2563EB",
         indigo: "#4F46E5",
         emerald: "#10B981",
+        gold: "#FBBF24",
         ink: "#0B1220",
         frost: "#F8FAFC"
       },

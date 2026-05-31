@@ -10,27 +10,27 @@ export const ContractorCard = ({ contractor, onChat }) => (
         className="h-14 w-14 rounded-xl object-cover shadow-md"
       />
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-base font-bold text-slate-100">{contractor.contractorProfile?.businessName || contractor.name}</h3>
-        <p className="text-sm text-slate-400">{contractor.city || "Service area not added"}</p>
-        <div className="mt-2 flex items-center gap-1 text-sm font-semibold text-emerald-300">
+        <h3 className="truncate text-base font-bold text-content">{contractor.contractorProfile?.businessName || contractor.name}</h3>
+        <p className="text-sm text-muted">{contractor.city || "Service area not added"}</p>
+        <div className="mt-2 flex items-center gap-1 text-sm font-semibold text-success">
           <Star className="h-4 w-4 fill-current" />
           {contractor.contractorProfile?.rating || "New"}
         </div>
       </div>
     </div>
-    <p className="mt-4 line-clamp-2 text-sm leading-6 text-slate-400">
+    <p className="mt-4 line-clamp-2 text-sm leading-6 text-muted">
       {contractor.contractorProfile?.bio || "Construction and interior specialist ready for Buildora projects."}
     </p>
     <div className="mt-4 flex flex-wrap gap-2">
       {(contractor.contractorProfile?.services || ["construction", "interior"]).slice(0, 3).map((service) => (
-        <span key={service} className="rounded-full border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-bold capitalize text-slate-300">
+        <span key={service} className="rounded-full border border-line-strong bg-surface-2 px-3 py-1 text-xs font-bold capitalize text-muted">
           {service}
         </span>
       ))}
     </div>
-    <div className="mt-5 grid grid-cols-2 gap-2 border-t border-slate-700/40 pt-4 text-xs font-bold text-slate-400">
+    <div className="mt-5 grid grid-cols-2 gap-2 border-t border-line/40 pt-4 text-xs font-bold text-muted">
       <span>12 active leads</span>
-      <span className="text-right text-emerald-300">Verified profile</span>
+      <span className="text-right text-success">Verified profile</span>
     </div>
     {onChat && (
       <Button onClick={() => onChat(contractor)} className="mt-5 w-full" variant="secondary">

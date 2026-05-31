@@ -43,12 +43,12 @@ export const AuthPage = ({ mode = "login" }) => {
         <div className="mb-6 inline-grid h-14 w-14 place-items-center rounded-lg bg-white text-ink">
           <Building2 />
         </div>
-        <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-bold text-blue-100">
-          <Sparkles className="h-4 w-4 text-emerald-300" />
+        <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-bold text-accent">
+          <Sparkles className="h-4 w-4 text-success" />
           Founder-demo ready marketplace
         </p>
-        <h1 className="text-4xl font-extrabold text-slate-100">{isRegister ? "Create your Buildora account" : "Welcome back to Buildora"}</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-300">
+        <h1 className="text-4xl font-extrabold text-content">{isRegister ? "Create your Buildora account" : "Welcome back to Buildora"}</h1>
+        <p className="mt-4 text-lg leading-8 text-muted">
           Customers post requirements. Contractors find qualified construction and interior leads with clean bidding and realtime chat.
         </p>
         <div className="mt-8 grid gap-3">
@@ -57,8 +57,8 @@ export const AuthPage = ({ mode = "login" }) => {
             [BadgeCheck, "Project, bid, profile, and chat modules"],
             [Sparkles, "Premium UI for investor walkthroughs"]
           ].map(([Icon, text]) => (
-            <div key={text} className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/60 p-3 text-sm font-bold text-slate-300">
-              <Icon className="h-5 w-5 text-blue-300" />
+            <div key={text} className="flex items-center gap-3 rounded-xl border border-line bg-surface/60 p-3 text-sm font-bold text-muted">
+              <Icon className="h-5 w-5 text-accent" />
               {text}
             </div>
           ))}
@@ -84,9 +84,9 @@ export const AuthPage = ({ mode = "login" }) => {
           <Button disabled={loading} className="w-full py-3">
             {loading ? "Please wait..." : isRegister ? "Create account" : "Login"}
           </Button>
-          <p className="text-center text-sm text-slate-400">
+          <p className="text-center text-sm text-muted">
             {isRegister ? "Already have an account?" : "New to Buildora?"}{" "}
-            <Link className="font-bold text-blue-300" to={isRegister ? "/login" : "/register"}>
+            <Link className="font-bold text-accent" to={isRegister ? "/login" : "/register"}>
               {isRegister ? "Login" : "Register"}
             </Link>
           </p>

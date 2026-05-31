@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { Button } from "./Button";
 
 const linkClass = ({ isActive }) =>
-  `rounded-xl px-4 py-2 text-sm font-semibold transition ${isActive ? "bg-brand-gradient text-white shadow-glow" : "text-slate-300 hover:bg-slate-800/60 hover:text-white"}`;
+  `rounded-xl px-4 py-2 text-sm font-semibold transition ${isActive ? "bg-brand-gradient text-white shadow-glow" : "text-muted hover:bg-surface-2/60 hover:text-content"}`;
 
 export const Layout = () => {
   const { user, logout } = useAuth();
@@ -34,14 +34,14 @@ export const Layout = () => {
   useEffect(() => {
     localStorage.setItem("buildora_theme", dark ? "dark" : "light");
     document.documentElement.classList.toggle("dark", dark);
-    document.body.classList.toggle("app-shell", dark);
+    document.body.classList.add("app-shell");
   }, [dark]);
 
   return (
-    <div className={`${dark ? "app-shell" : "min-h-screen bg-slate-50"} min-h-screen`}>
-      <header className="sticky top-0 z-40 border-b border-slate-700/40 bg-slate-950/70 backdrop-blur-2xl">
+    <div className="app-shell min-h-screen">
+      <header className="sticky top-0 z-40 border-b border-line/60 bg-surface/80 backdrop-blur-2xl">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
+          <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-content">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-gradient text-white shadow-glow">
               <Building2 className="h-5 w-5" />
             </span>
@@ -50,7 +50,7 @@ export const Layout = () => {
           <div className="hidden items-center gap-2 md:flex">
             {links.map(([label, href]) =>
               href.includes("#") ? (
-                <a key={href} className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-800/70" href={href}>
+                <a key={href} className="rounded-xl px-3 py-2 text-sm font-semibold text-muted hover:bg-surface-2/70" href={href}>
                   {label}
                 </a>
               ) : (
@@ -79,7 +79,7 @@ export const Layout = () => {
               </>
             )}
           </div>
-          <button className="rounded-xl border border-slate-700 p-2 text-white md:hidden" onClick={() => setOpen((value) => !value)} aria-label="Menu">
+          <button className="rounded-xl border border-line p-2 text-content md:hidden" onClick={() => setOpen((value) => !value)} aria-label="Menu">
             {open ? <X /> : <Menu />}
           </button>
         </nav>
@@ -89,7 +89,7 @@ export const Layout = () => {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="border-t border-slate-700/50 bg-slate-950/95 px-4 py-3 md:hidden"
+              className="border-t border-line/50 bg-surface-deep/95 px-4 py-3 md:hidden"
             >
               <div className="flex flex-col gap-2">
                 {links.map(([label, href]) => (
