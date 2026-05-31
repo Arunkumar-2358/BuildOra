@@ -14,17 +14,22 @@ export const Layout = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(() => localStorage.getItem("buildora_theme") !== "light");
 
-  const links = user
+  const links = !user
     ? [
-        ["Dashboard", "/dashboard"],
-        user.role === "customer" ? ["Post Project", "/post-project"] : ["Browse Projects", "/browse-projects"],
-        ["Chats", "/chat"],
-        ["Profile", "/profile"]
-      ]
-    : [
         ["How it works", "/#how"],
         ["Contractors", "/#contractors"]
-      ];
+      ]
+    : user.role === "admin"
+      ? [
+          ["Admin Dashboard", "/admin"],
+          ["Profile", "/profile"]
+        ]
+      : [
+          ["Dashboard", "/dashboard"],
+          user.role === "customer" ? ["Post Project", "/post-project"] : ["Browse Projects", "/browse-projects"],
+          ["Chats", "/chat"],
+          ["Profile", "/profile"]
+        ];
 
   const handleLogout = () => {
     logout();

@@ -23,6 +23,13 @@ const contractorProfileSchema = new mongoose.Schema(
     certifications: [String],
     licenseNumber: String,
     isVerified: { type: Boolean, default: false },
+    // Admin-controlled verification lifecycle for the approval queue.
+    verificationStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected", "suspended"],
+      default: "pending"
+    },
+    adminNote: String,
     availability: {
       type: String,
       enum: ["available", "busy", "unavailable"],
@@ -37,7 +44,9 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6, select: false },
-    role: { type: String, enum: ["customer", "contractor"], required: true },
+    role: { type: String, enum: ["customer", "contractor", "admin"], required: true },
+    // Account standing — suspended accounts cannot authenticate.
+    status: { type: String, enum: ["active", "suspended"], default: "active" },
     phone: { type: String, trim: true },
     city: { type: String, trim: true },
     profileImage: {

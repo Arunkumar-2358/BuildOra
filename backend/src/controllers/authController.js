@@ -35,7 +35,9 @@ export const register = asyncHandler(async (req, res) => {
     role,
     phone,
     city,
-    profileImage
+    profileImage,
+    // Contractors enter the verification queue as "pending" on signup.
+    ...(role === "contractor" ? { contractorProfile: { verificationStatus: "pending" } } : {})
   });
 
   sendAuthResponse(res, user, 201);
@@ -48,6 +50,11 @@ export const login = asyncHandler(async (req, res) => {
   if (!user || !(await user.matchPassword(password))) {
     res.status(401);
     throw new Error("Invalid email or password");
+  }
+
+  if (user.status === "suspended") {
+    res.status(403);
+    throw new Error("Your account has been suspended. Please contact support.");
   }
 
   user.password = undefined;

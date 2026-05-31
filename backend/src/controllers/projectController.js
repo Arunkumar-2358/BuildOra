@@ -2,6 +2,7 @@ import Bid from "../models/Bid.js";
 import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { setPaymentStatusForProject } from "../utils/payments.js";
 import { uploadMany } from "../utils/uploadToCloudinary.js";
 
 export const createProject = asyncHandler(async (req, res) => {
@@ -81,6 +82,9 @@ export const updateProjectStatus = asyncHandler(async (req, res) => {
 
   project.status = req.body.status;
   await project.save();
+
+  // Settle the linked payment when the project reaches a terminal state.
+  await setPaymentStatusForProject(project._id, project.status);
 
   res.json(project);
 });

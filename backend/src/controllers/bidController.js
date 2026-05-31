@@ -2,6 +2,7 @@ import Bid from "../models/Bid.js";
 import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { upsertPaymentForBid } from "../utils/payments.js";
 import { notifyProjectOwner } from "./projectController.js";
 
 export const createBid = asyncHandler(async (req, res) => {
@@ -81,6 +82,8 @@ export const updateBidStatus = asyncHandler(async (req, res) => {
     );
     bid.project.status = "awarded";
     await bid.project.save();
+    // Record the awarded engagement as a pending payment for admin tracking.
+    await upsertPaymentForBid({ project: bid.project, bid });
   }
 
   await Notification.create({

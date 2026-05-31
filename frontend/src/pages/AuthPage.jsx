@@ -30,8 +30,8 @@ export const AuthPage = ({ mode = "login" }) => {
     event.preventDefault();
     setError("");
     try {
-      await (isRegister ? register(form) : login({ email: form.email, password: form.password }));
-      navigate("/dashboard");
+      const loggedUser = await (isRegister ? register(form) : login({ email: form.email, password: form.password }));
+      navigate(loggedUser?.role === "admin" ? "/admin" : "/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     }

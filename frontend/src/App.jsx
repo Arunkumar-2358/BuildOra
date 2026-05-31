@@ -10,6 +10,12 @@ import { LandingPage } from "./pages/LandingPage";
 import { PostProject } from "./pages/PostProject";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ProjectDetails } from "./pages/ProjectDetails";
+import { AdminAnalytics } from "./pages/admin/AdminAnalytics";
+import { AdminApprovals } from "./pages/admin/AdminApprovals";
+import { AdminLayout } from "./pages/admin/AdminLayout";
+import { AdminOverview } from "./pages/admin/AdminOverview";
+import { AdminPayments } from "./pages/admin/AdminPayments";
+import { AdminUsers } from "./pages/admin/AdminUsers";
 
 export default function App() {
   return (
@@ -31,6 +37,16 @@ export default function App() {
 
         <Route element={<ProtectedRoute roles={["customer"]} />}>
           <Route path="post-project" element={<PostProject />} />
+        </Route>
+
+        <Route element={<ProtectedRoute roles={["admin"]} />}>
+          <Route path="admin" element={<AdminLayout />}>
+            <Route index element={<AdminOverview />} />
+            <Route path="approvals" element={<AdminApprovals />} />
+            <Route path="payments" element={<AdminPayments />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
