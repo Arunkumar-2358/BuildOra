@@ -2,6 +2,12 @@ import cloudinary from "../config/cloudinary.js";
 
 export const uploadBufferToCloudinary = (file, folder = "buildora") =>
   new Promise((resolve, reject) => {
+    const meta = {
+      mimeType: file.mimetype,
+      originalName: file.originalname,
+      bytes: file.size
+    };
+
     if (
       !process.env.CLOUDINARY_CLOUD_NAME ||
       !process.env.CLOUDINARY_API_KEY ||
@@ -9,7 +15,8 @@ export const uploadBufferToCloudinary = (file, folder = "buildora") =>
     ) {
       resolve({
         url: `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-        publicId: `${folder}/local-${Date.now()}-${file.originalname}`
+        publicId: `${folder}/local-${Date.now()}-${file.originalname}`,
+        ...meta
       });
       return;
     }
@@ -18,7 +25,7 @@ export const uploadBufferToCloudinary = (file, folder = "buildora") =>
       { folder, resource_type: "auto" },
       (error, result) => {
         if (error) reject(error);
-        else resolve({ url: result.secure_url, publicId: result.public_id });
+        else resolve({ url: result.secure_url, publicId: result.public_id, ...meta, bytes: result.bytes });
       }
     );
 

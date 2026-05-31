@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getContractorPortfolio,
   getContractors,
   getNotifications,
   getUserById,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 router.get("/contractors", getContractors);
 router.get("/notifications", protect, getNotifications);
+router.get("/:id/portfolio", protect, getContractorPortfolio);
 router.put(
   "/profile",
   protect,

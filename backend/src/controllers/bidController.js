@@ -17,6 +17,19 @@ export const createBid = asyncHandler(async (req, res) => {
     throw new Error("Customers cannot bid on their own projects");
   }
 
+  const existingBid = await Bid.findOne({ project: project._id, contractor: req.user._id });
+  if (existingBid) {
+    existingBid.quotationAmount = req.body.quotationAmount;
+    existingBid.estimatedDuration = req.body.estimatedDuration;
+    existingBid.proposalMessage = req.body.proposalMessage;
+    existingBid.status = "pending";
+
+    const saved = await existingBid.save();
+    await notifyProjectOwner({ project, bid: saved });
+    res.status(200).json(await saved.populate("contractor", "name city profileImage contractorProfile"));
+    return;
+  }
+
   const bid = await Bid.create({
     project: project._id,
     contractor: req.user._id,

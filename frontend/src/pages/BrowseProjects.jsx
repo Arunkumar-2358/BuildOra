@@ -23,10 +23,10 @@ export const BrowseProjects = () => {
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <h1 className="text-3xl font-extrabold text-ink">Browse available projects</h1>
-          <p className="mt-2 text-ink/65">Search qualified leads and submit a quotation.</p>
+          <h1 className="text-3xl font-extrabold text-content">Browse available projects</h1>
+          <p className="mt-2 text-muted">Search qualified leads, apply filters, and submit high-conversion quotations.</p>
         </div>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-3 md:min-w-[38rem]">
           <Input aria-label="Search" name="search" placeholder="Search" value={filters.search} onChange={update} />
           <Input aria-label="City" name="city" placeholder="City" value={filters.city} onChange={update} />
           <Select aria-label="Category" name="category" value={filters.category} onChange={update}>
@@ -37,7 +37,7 @@ export const BrowseProjects = () => {
           </Select>
         </div>
       </div>
-      <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-ink/65">
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface/70 px-4 py-2 text-sm font-bold text-muted">
         <Search className="h-4 w-4" />
         {projects.length} matching projects
       </div>

@@ -17,8 +17,8 @@ const io = new Server(server, {
     origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true
   }
-});
-
+}); 
+  
 attachSocketHandlers(io);
 
 server.listen(PORT, () => {

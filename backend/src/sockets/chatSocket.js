@@ -33,26 +33,52 @@ export const attachSocketHandlers = (io) => {
       socket.join(chatId);
     });
 
-    socket.on("message:send", async ({ chatId, receiverId, content }, callback) => {
+    socket.on("message:send", async ({ chatId, receiverId, content, type = "text", audio, file }, callback) => {
       try {
         const chat = await Chat.findOne({ _id: chatId, participants: socket.user._id });
         if (!chat) throw new Error("Chat not found");
 
-        const message = await Message.create({
+        const messageData = {
           chat: chat._id,
           sender: socket.user._id,
           receiver: receiverId,
-          content
-        });
+          type
+        };
+
+        if (type === "voice") {
+          if (!audio?.url) throw new Error("Voice message is missing its audio clip");
+          messageData.audio = {
+            url: audio.url,
+            publicId: audio.publicId,
+            duration: audio.duration,
+            mimeType: audio.mimeType,
+            sizeBytes: audio.sizeBytes
+          };
+        } else if (type === "file") {
+          if (!file?.url) throw new Error("File message is missing its attachment");
+          messageData.file = {
+            url: file.url,
+            publicId: file.publicId,
+            name: file.name,
+            mimeType: file.mimeType,
+            sizeBytes: file.sizeBytes
+          };
+        } else {
+          if (!content?.trim()) throw new Error("Message content is required");
+          messageData.content = content;
+        }
+
+        const message = await Message.create(messageData);
 
         chat.lastMessage = message._id;
         await chat.save();
 
+        const kindLabel = type === "voice" ? "voice message" : type === "file" ? "file" : "message";
         await Notification.create({
           user: receiverId,
           type: "message",
           title: "New message",
-          body: `${socket.user.name} sent you a message.`,
+          body: `${socket.user.name} sent you a ${kindLabel}.`,
           link: `/chat/${chat._id}`
         });
 

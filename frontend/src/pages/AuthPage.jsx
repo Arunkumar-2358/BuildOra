@@ -1,4 +1,5 @@
 import { BadgeCheck, Building2, ShieldCheck, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
@@ -38,16 +39,16 @@ export const AuthPage = ({ mode = "login" }) => {
 
   return (
     <main className="mx-auto grid min-h-[calc(100vh-76px)] max-w-6xl items-center gap-10 px-4 py-10 md:grid-cols-2">
-      <section className="rounded-lg bg-ink p-6 text-white shadow-soft md:p-8">
+      <motion.section initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="premium-card rounded-2xl p-6 shadow-soft md:p-8">
         <div className="mb-6 inline-grid h-14 w-14 place-items-center rounded-lg bg-white text-ink">
           <Building2 />
         </div>
-        <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-bold text-white/70">
-          <Sparkles className="h-4 w-4 text-gold" />
+        <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-bold text-accent">
+          <Sparkles className="h-4 w-4 text-success" />
           Founder-demo ready marketplace
         </p>
-        <h1 className="text-4xl font-extrabold">{isRegister ? "Create your Buildora account" : "Welcome back to Buildora"}</h1>
-        <p className="mt-4 text-lg leading-8 text-white/65">
+        <h1 className="text-4xl font-extrabold text-content">{isRegister ? "Create your Buildora account" : "Welcome back to Buildora"}</h1>
+        <p className="mt-4 text-lg leading-8 text-muted">
           Customers post requirements. Contractors find qualified construction and interior leads with clean bidding and realtime chat.
         </p>
         <div className="mt-8 grid gap-3">
@@ -56,14 +57,14 @@ export const AuthPage = ({ mode = "login" }) => {
             [BadgeCheck, "Project, bid, profile, and chat modules"],
             [Sparkles, "Premium UI for investor walkthroughs"]
           ].map(([Icon, text]) => (
-            <div key={text} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 p-3 text-sm font-bold text-white/75">
-              <Icon className="h-5 w-5 text-gold" />
+            <div key={text} className="flex items-center gap-3 rounded-xl border border-line bg-surface/60 p-3 text-sm font-bold text-muted">
+              <Icon className="h-5 w-5 text-accent" />
               {text}
             </div>
           ))}
         </div>
-      </section>
-      <form onSubmit={submit} className="premium-card rounded-lg p-6 shadow-soft">
+      </motion.section>
+      <motion.form initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} onSubmit={submit} className="premium-card rounded-2xl p-6 shadow-soft">
         <div className="grid gap-4">
           {isRegister && <Input label="Name" name="name" value={form.name} onChange={update} required />}
           <Input label="Email" name="email" type="email" value={form.email} onChange={update} required />
@@ -79,18 +80,18 @@ export const AuthPage = ({ mode = "login" }) => {
               <Input label="Profile image" name="profileImage" type="file" accept="image/*" onChange={update} />
             </>
           )}
-          {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
+          {error && <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</p>}
           <Button disabled={loading} className="w-full py-3">
             {loading ? "Please wait..." : isRegister ? "Create account" : "Login"}
           </Button>
-          <p className="text-center text-sm text-ink/65">
+          <p className="text-center text-sm text-muted">
             {isRegister ? "Already have an account?" : "New to Buildora?"}{" "}
-            <Link className="font-bold text-moss" to={isRegister ? "/login" : "/register"}>
+            <Link className="font-bold text-accent" to={isRegister ? "/login" : "/register"}>
               {isRegister ? "Login" : "Register"}
             </Link>
           </p>
         </div>
-      </form>
+      </motion.form>
     </main>
   );
 };

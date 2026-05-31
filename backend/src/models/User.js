@@ -15,7 +15,19 @@ const contractorProfileSchema = new mongoose.Schema(
     ],
     rating: { type: Number, default: 0 },
     reviewsCount: { type: Number, default: 0 },
-    bio: String
+    bio: String,
+
+    // Professional details (surfaced on the public portfolio page).
+    specialization: String,
+    skills: [String],
+    certifications: [String],
+    licenseNumber: String,
+    isVerified: { type: Boolean, default: false },
+    availability: {
+      type: String,
+      enum: ["available", "busy", "unavailable"],
+      default: "available"
+    }
   },
   { _id: false }
 );

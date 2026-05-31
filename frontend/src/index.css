@@ -3,16 +3,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Centralized theme tokens.
+ * Values are space-separated RGB channels so Tailwind's `<alpha-value>`
+ * modifier works (e.g. `bg-surface/80`). Light theme is the base; the
+ * `.dark` class on <html> swaps in the dark palette.
+ */
 :root {
-  color: #15201b;
-  background: #f8faf7;
+  color-scheme: light;
+
+  --bg: 248 250 252;          /* page background  (slate-50)  */
+  --surface: 255 255 255;     /* cards            (white)     */
+  --surface-2: 241 245 249;   /* insets/chips     (slate-100) */
+  --surface-deep: 226 232 240;/* deepest panels   (slate-200) */
+
+  --content: 15 23 42;        /* primary text     (slate-900) */
+  --muted: 71 85 105;         /* secondary text   (slate-600) */
+  --subtle: 100 116 139;      /* tertiary text    (slate-500) */
+
+  --line: 226 232 240;        /* borders          (slate-200) */
+  --line-strong: 203 213 225; /* emphasized borders(slate-300)*/
+
+  --accent: 37 99 235;        /* links/accents    (blue-600)  */
+  --success: 5 150 105;       /* positive accent  (emerald-600)*/
+
+  --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --bg: 5 10 20;              /* #050a14 */
+  --surface: 15 23 42;        /* slate-900 */
+  --surface-2: 30 41 59;      /* slate-800 */
+  --surface-deep: 2 8 23;     /* slate-950 */
+
+  --content: 241 245 249;     /* slate-100 */
+  --muted: 148 163 184;       /* slate-400 */
+  --subtle: 100 116 139;      /* slate-500 */
+
+  --line: 51 65 85;           /* slate-700 */
+  --line-strong: 71 85 105;   /* slate-600 */
+
+  --accent: 147 197 253;      /* blue-300 */
+  --success: 110 231 183;     /* emerald-300 */
+
+  --shadow-card: 0 18px 50px rgba(2, 8, 23, 0.45);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    linear-gradient(135deg, rgba(250, 246, 239, 0.92) 0%, rgba(238, 243, 239, 0.95) 44%, rgba(248, 250, 247, 1) 100%);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  background: rgb(var(--bg));
+  color: rgb(var(--content));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 button,
@@ -22,15 +69,26 @@ select {
   font: inherit;
 }
 
-.glass {
-  border: 1px solid rgba(255, 255, 255, 0.68);
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(22px);
+/* App background — a subtle branded mesh that adapts to the active theme. */
+.app-shell {
+  min-height: 100vh;
+  background-color: rgb(var(--bg));
+  background-image:
+    radial-gradient(circle at 10% -10%, rgba(37, 99, 235, 0.12), transparent 45%),
+    radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.1), transparent 40%);
 }
 
-.dark-shell {
-  background: #15201b;
-  color: #f8faf7;
+.dark .app-shell {
+  background-image:
+    radial-gradient(circle at 10% -10%, rgba(37, 99, 235, 0.15), transparent 45%),
+    radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.12), transparent 40%),
+    linear-gradient(180deg, #050a14 0%, #091225 100%);
+}
+
+.glass {
+  border: 1px solid rgb(var(--line) / 0.6);
+  background: rgb(var(--surface) / 0.7);
+  backdrop-filter: blur(18px);
 }
 
 .line-clamp-2 {
@@ -40,24 +98,60 @@ select {
   overflow: hidden;
 }
 
-.mesh-dark {
-  background:
-    linear-gradient(135deg, rgba(21, 32, 27, 0.98), rgba(31, 55, 44, 0.96)),
-    url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85");
-  background-blend-mode: multiply;
-  background-position: center;
-  background-size: cover;
-}
-
+/* Primary surface for cards, panels, and forms across the app. */
 .premium-card {
-  border: 1px solid rgba(21, 32, 27, 0.09);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 18px 60px rgba(21, 32, 27, 0.1);
+  border: 1px solid rgb(var(--line) / 0.9);
+  background: rgb(var(--surface) / 0.92);
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.subtle-grid {
-  background-image:
-    linear-gradient(rgba(21, 32, 27, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(21, 32, 27, 0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
+.brand-text-gradient {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 45%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .brand-text-gradient {
+  background: linear-gradient(135deg, #f8fafc 10%, #93c5fd 45%, #34d399 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgb(var(--line-strong) / 0.7);
+  border-radius: 999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Voice-message seek bar thumb */
+.voice-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 2px solid rgb(var(--accent));
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(2, 8, 23, 0.3);
+}
+
+.voice-seek::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 2px solid rgb(var(--accent));
+  cursor: pointer;
 }

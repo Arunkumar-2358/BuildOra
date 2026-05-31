@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthPage } from "./pages/AuthPage";
 import { BrowseProjects } from "./pages/BrowseProjects";
 import { ChatPage } from "./pages/ChatPage";
+import { ContractorPortfolio } from "./pages/ContractorPortfolio";
 import { Dashboard } from "./pages/Dashboard";
 import { LandingPage } from "./pages/LandingPage";
 import { PostProject } from "./pages/PostProject";
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="browse-projects" element={<BrowseProjects />} />
           <Route path="projects/:id" element={<ProjectDetails />} />
+          <Route path="contractors/:id" element={<ContractorPortfolio />} />
           <Route path="chat" element={<ChatPage />} />
           <Route path="chat/:chatId" element={<ChatPage />} />
           <Route path="profile" element={<ProfilePage />} />
