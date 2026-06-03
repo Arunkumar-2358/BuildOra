@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+// Reusable GeoJSON Point for 2dsphere geo-queries. coordinates = [lng, lat].
+export const geoPointSchema = new mongoose.Schema(
+  {
+    type: { type: String, enum: ["Point"], default: "Point" },
+    coordinates: { type: [Number], default: undefined } // [longitude, latitude]
+  },
+  { _id: false }
+);
+
 const projectSchema = new mongoose.Schema(
   {
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -7,6 +16,10 @@ const projectSchema = new mongoose.Schema(
     description: { type: String, required: true },
     budget: { type: Number, required: true },
     location: { type: String, required: true, trim: true },
+    // Structured location for discovery & matching.
+    state: { type: String, trim: true },
+    pincode: { type: String, trim: true },
+    geo: { type: geoPointSchema, default: undefined },
     category: {
       type: String,
       enum: ["construction", "interior", "renovation", "architecture", "landscaping", "other"],
@@ -32,6 +45,7 @@ const projectSchema = new mongoose.Schema(
 );
 
 projectSchema.index({ title: "text", description: "text", location: "text", category: "text" });
+projectSchema.index({ geo: "2dsphere" });
 
 const Project = mongoose.model("Project", projectSchema);
 

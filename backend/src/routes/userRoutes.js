@@ -1,4 +1,5 @@
 import express from "express";
+import { getNearbyContractors } from "../controllers/discoveryController.js";
 import {
   getContractorPortfolio,
   getContractors,
@@ -12,6 +13,7 @@ import { upload } from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.get("/contractors", getContractors);
+router.get("/nearby", protect, getNearbyContractors);
 router.get("/notifications", protect, getNotifications);
 router.get("/:id/portfolio", protect, getContractorPortfolio);
 router.put(

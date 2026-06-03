@@ -6,6 +6,7 @@ import { BrowseProjects } from "./pages/BrowseProjects";
 import { ChatPage } from "./pages/ChatPage";
 import { ContractorPortfolio } from "./pages/ContractorPortfolio";
 import { Dashboard } from "./pages/Dashboard";
+import { FindContractors } from "./pages/FindContractors";
 import { LandingPage } from "./pages/LandingPage";
 import { PostProject } from "./pages/PostProject";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -37,6 +38,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute roles={["customer"]} />}>
           <Route path="post-project" element={<PostProject />} />
+          <Route path="find-contractors" element={<FindContractors />} />
         </Route>
 
         <Route element={<ProtectedRoute roles={["admin"]} />}>

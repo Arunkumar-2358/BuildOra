@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { Input, Select, Textarea } from "../components/Input";
+import { LocationPicker } from "../components/LocationPicker";
 import { api } from "../services/api";
 import { formatBytes } from "../utils/format";
 import { MAX_FILE_BYTES, MAX_PROJECT_FILES, isPdf, validateFiles } from "../utils/upload";
@@ -19,10 +20,18 @@ export const PostProject = () => {
     description: "",
     budget: "",
     location: "",
+    state: "",
+    pincode: "",
+    lat: "",
+    lng: "",
     category: "construction",
     timeline: "",
     images: []
   });
+
+  // LocationPicker uses `city`; map it onto the project's `location` field.
+  const onLocation = ({ city, ...rest }) =>
+    setForm((current) => ({ ...current, ...rest, ...(city !== undefined ? { location: city } : {}) }));
 
   // Object URLs for image previews — memoized so they're stable per file.
   const previews = useMemo(
@@ -101,7 +110,12 @@ export const PostProject = () => {
               <input className="w-full accent-blue-500" name="budget" type="range" min="100000" max="20000000" step="50000" value={form.budget || 100000} onChange={update} />
               <p className="mt-2 text-sm font-bold text-accent">₹{Number(form.budget || 100000).toLocaleString("en-IN")}</p>
             </div>
-            <Input label="Location" name="location" value={form.location} onChange={update} required />
+            <LocationPicker
+              label="Project location"
+              value={{ city: form.location, state: form.state, pincode: form.pincode, lat: form.lat, lng: form.lng }}
+              onChange={onLocation}
+            />
+            <p className="-mt-1 text-xs text-muted">Adding a precise location helps us match you with the best nearby contractors.</p>
             <Input label="Timeline" name="timeline" value={form.timeline} onChange={update} placeholder="e.g. 3 months" required />
           </>
         )}

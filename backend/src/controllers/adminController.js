@@ -222,7 +222,7 @@ export const getPayments = asyncHandler(async (req, res) => {
 export const getAnalytics = asyncHandler(async (req, res) => {
   const byMonth = { format: "%Y-%m", date: "$createdAt" };
 
-  const [userGrowth, revenueGrowth, projectStats, topContractors] = await Promise.all([
+  const [userGrowth, revenueGrowth, projectStats, topContractors, contractorsByCity, projectsByCity] = await Promise.all([
     User.aggregate([
       { $match: { role: { $ne: "admin" } } },
       { $group: { _id: { $dateToString: byMonth }, customers: { $sum: { $cond: [{ $eq: ["$role", "customer"] }, 1, 0] } }, contractors: { $sum: { $cond: [{ $eq: ["$role", "contractor"] }, 1, 0] } }, total: { $sum: 1 } } },
@@ -239,7 +239,21 @@ export const getAnalytics = asyncHandler(async (req, res) => {
     User.find({ role: "contractor" })
       .sort({ "contractorProfile.rating": -1, "contractorProfile.reviewsCount": -1 })
       .limit(8)
-      .select("name city contractorProfile.rating contractorProfile.reviewsCount")
+      .select("name city contractorProfile.rating contractorProfile.reviewsCount"),
+    // Location analytics — contractor density by city.
+    User.aggregate([
+      { $match: { role: "contractor", city: { $nin: [null, ""] } } },
+      { $group: { _id: "$city", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 8 }
+    ]),
+    // Location analytics — project demand by city.
+    Project.aggregate([
+      { $match: { location: { $nin: [null, ""] } } },
+      { $group: { _id: "$location", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 8 }
+    ])
   ]);
 
   res.json({
@@ -251,6 +265,8 @@ export const getAnalytics = asyncHandler(async (req, res) => {
       city: c.city,
       rating: c.contractorProfile?.rating || 0,
       reviews: c.contractorProfile?.reviewsCount || 0
-    }))
+    })),
+    contractorsByCity: contractorsByCity.map((c) => ({ city: c._id, count: c.count })),
+    projectsByCity: projectsByCity.map((p) => ({ city: p._id, count: p.count }))
   });
 });

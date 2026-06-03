@@ -68,6 +68,8 @@ export const AdminAnalytics = () => {
   const users = data.userGrowth.map((u) => ({ ...u, label: monthLabel(u.month) }));
   const projects = data.projectStats;
   const contractors = data.topContractors;
+  const contractorsByCity = data.contractorsByCity || [];
+  const projectsByCity = data.projectsByCity || [];
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -125,6 +127,26 @@ export const AdminAnalytics = () => {
           <YAxis type="category" dataKey="name" tick={axisTick} axisLine={false} tickLine={false} width={90} />
           <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
           <Bar dataKey="rating" fill="#F59E0B" radius={[0, 6, 6, 0]} />
+        </BarChart>
+      </ChartCard>
+
+      <ChartCard title="Contractor density by city" empty={contractorsByCity.length === 0}>
+        <BarChart data={contractorsByCity} layout="vertical" margin={{ left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" horizontal={false} />
+          <XAxis type="number" allowDecimals={false} tick={axisTick} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="city" tick={axisTick} axisLine={false} tickLine={false} width={90} />
+          <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
+          <Bar dataKey="count" fill="#10B981" radius={[0, 6, 6, 0]} />
+        </BarChart>
+      </ChartCard>
+
+      <ChartCard title="Project demand by city" empty={projectsByCity.length === 0}>
+        <BarChart data={projectsByCity} layout="vertical" margin={{ left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" horizontal={false} />
+          <XAxis type="number" allowDecimals={false} tick={axisTick} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="city" tick={axisTick} axisLine={false} tickLine={false} width={90} />
+          <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
+          <Bar dataKey="count" fill="#6366F1" radius={[0, 6, 6, 0]} />
         </BarChart>
       </ChartCard>
     </div>

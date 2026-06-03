@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "../components/Button";
 import { Input, Select, Textarea } from "../components/Input";
+import { LocationPicker } from "../components/LocationPicker";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 
@@ -23,9 +24,17 @@ export const ProfilePage = () => {
     certifications: user.contractorProfile?.certifications?.join(", ") || "",
     licenseNumber: user.contractorProfile?.licenseNumber || "",
     availability: user.contractorProfile?.availability || "available",
+    state: user.state || "",
+    pincode: user.pincode || "",
+    lat: user.geo?.coordinates?.[1] || "",
+    lng: user.geo?.coordinates?.[0] || "",
     profileImage: null,
     portfolioImages: []
   });
+
+  // LocationPicker uses `city`; keep it in sync with the existing city field.
+  const onLocation = ({ city, ...rest }) =>
+    setForm((current) => ({ ...current, ...rest, ...(city !== undefined ? { city } : {}) }));
 
   const update = (event) => {
     const { name, value, files } = event.target;
@@ -73,6 +82,13 @@ export const ProfilePage = () => {
               </Select>
             </div>
             <Textarea label="Bio" name="bio" value={form.bio} onChange={update} />
+            <div className="rounded-xl border border-line bg-surface-2/40 p-4">
+              <LocationPicker
+                label="Service location (helps customers find you nearby)"
+                value={{ city: form.city, state: form.state, pincode: form.pincode, lat: form.lat, lng: form.lng }}
+                onChange={onLocation}
+              />
+            </div>
             <Input label="Portfolio images" name="portfolioImages" type="file" accept="image/*" multiple onChange={update} />
             <Link to={`/contractors/${user._id}`} className="text-sm font-bold text-accent">View my public portfolio →</Link>
           </>

@@ -1,5 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
+import { getRecommendedContractors } from "../controllers/discoveryController.js";
 import {
   createProject,
   getProjectById,
@@ -33,6 +34,7 @@ router
   );
 
 router.get("/:id", protect, getProjectById);
+router.get("/:id/recommended", protect, getRecommendedContractors);
 router.patch("/:id/status", protect, authorize("customer"), body("status").isIn(["open", "in-review", "awarded", "completed", "cancelled"]), validate, updateProjectStatus);
 router.patch("/:id/save", protect, authorize("contractor"), saveProject);
 

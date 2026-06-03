@@ -50,12 +50,25 @@ export const updateProfile = asyncHandler(async (req, res) => {
     skills,
     certifications,
     licenseNumber,
-    availability
+    availability,
+    state,
+    pincode,
+    lat,
+    lng
   } = req.body;
 
   user.name = name ?? user.name;
   user.phone = phone ?? user.phone;
   user.city = city ?? user.city;
+  user.state = state ?? user.state;
+  user.pincode = pincode ?? user.pincode;
+
+  // Update geo coordinates when provided (enables nearby discovery & matching).
+  const latitude = Number(lat);
+  const longitude = Number(lng);
+  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    user.geo = { type: "Point", coordinates: [longitude, latitude] };
+  }
 
   if (req.files?.profileImage?.[0]) {
     const [profileImage] = await uploadMany(req.files.profileImage, "buildora/profiles");

@@ -1,9 +1,11 @@
-import { Briefcase, Check, CheckCircle2, FileText, MessageCircle, Send, Star, X } from "lucide-react";
+import { Briefcase, Check, CheckCircle2, FileText, MapPin, MessageCircle, Send, Sparkles, Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/Button";
 import { ContractorReviews } from "../components/ContractorReviews";
 import { Input, Textarea } from "../components/Input";
+import { MapView } from "../components/MapView";
+import { RecommendedContractors } from "../components/RecommendedContractors";
 import { ReviewCard } from "../components/ReviewCard";
 import { ReviewForm } from "../components/ReviewForm";
 import { useAuth } from "../context/AuthContext";
@@ -126,6 +128,19 @@ export const ProjectDetails = () => {
               )}
             </div>
           )}
+          {project.geo?.coordinates?.length === 2 && (
+            <div className="mt-6">
+              <p className="mb-2 inline-flex items-center gap-1 text-xs font-bold uppercase text-muted">
+                <MapPin className="h-3.5 w-3.5" /> Project location{project.pincode ? ` · ${project.pincode}` : ""}
+              </p>
+              <MapView
+                center={{ lat: project.geo.coordinates[1], lng: project.geo.coordinates[0] }}
+                markers={[{ id: "project", lat: project.geo.coordinates[1], lng: project.geo.coordinates[0], title: project.title, type: "project" }]}
+                height="14rem"
+                zoom={13}
+              />
+            </div>
+          )}
           {isOwner && project.status === "awarded" && (
             <Button variant="accent" className="mt-6" onClick={markCompleted}>
               <CheckCircle2 className="h-4 w-4" /> Mark project completed
@@ -192,6 +207,17 @@ export const ProjectDetails = () => {
           </div>
         </aside>
       </div>
+
+      {/* Smart-matched recommended contractors (owner, while still hiring) */}
+      {isOwner && ["open", "in-review"].includes(project.status) && (
+        <section className="space-y-4">
+          <h2 className="flex items-center gap-2 text-2xl font-extrabold text-content">
+            <Sparkles className="h-6 w-6 text-accent" /> Recommended contractors
+          </h2>
+          <p className="-mt-2 text-sm text-muted">Best matches for this project by location, rating, specialization, and more.</p>
+          <RecommendedContractors projectId={id} />
+        </section>
+      )}
 
       {/* Ratings & reviews */}
       {(awardedContractorId || review) && (

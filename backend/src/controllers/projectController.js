@@ -4,6 +4,17 @@ import Project from "../models/Project.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { setPaymentStatusForProject } from "../utils/payments.js";
 import { uploadMany } from "../utils/uploadToCloudinary.js";
+import { inviteTopMatches } from "./discoveryController.js";
+
+// Build a GeoJSON point from form lat/lng if both are valid numbers.
+const buildGeo = (lat, lng) => {
+  const latitude = Number(lat);
+  const longitude = Number(lng);
+  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    return { type: "Point", coordinates: [longitude, latitude] };
+  }
+  return undefined;
+};
 
 export const createProject = asyncHandler(async (req, res) => {
   const images = await uploadMany(req.files, "buildora/projects");
@@ -13,10 +24,20 @@ export const createProject = asyncHandler(async (req, res) => {
     description: req.body.description,
     budget: req.body.budget,
     location: req.body.location,
+    state: req.body.state,
+    pincode: req.body.pincode,
+    geo: buildGeo(req.body.lat, req.body.lng),
     category: req.body.category,
     timeline: req.body.timeline,
     images
   });
+
+  // Auto-invite the best-matching contractors to bid (non-blocking on failure).
+  try {
+    await inviteTopMatches(project, 5);
+  } catch (error) {
+    console.error("Auto-invite failed:", error.message);
+  }
 
   res.status(201).json(await project.populate("customer", "name city profileImage"));
 });

@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { geoPointSchema } from "./Project.js";
 
 const contractorProfileSchema = new mongoose.Schema(
   {
@@ -49,6 +50,10 @@ const userSchema = new mongoose.Schema(
     status: { type: String, enum: ["active", "suspended"], default: "active" },
     phone: { type: String, trim: true },
     city: { type: String, trim: true },
+    state: { type: String, trim: true },
+    pincode: { type: String, trim: true },
+    // Contractor base/service location for geo discovery & matching.
+    geo: { type: geoPointSchema, default: undefined },
     profileImage: {
       url: String,
       publicId: String
@@ -58,6 +63,8 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.index({ geo: "2dsphere" });
 
 userSchema.pre("save", async function hashPassword(next) {
   if (!this.isModified("password")) return next();
