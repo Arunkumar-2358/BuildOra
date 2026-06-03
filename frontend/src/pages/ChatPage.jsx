@@ -40,10 +40,14 @@ export const ChatPage = () => {
     loadChats();
   }, []);
 
-  useEffect(() => {
-    if (!chatId || !socket) return undefined;
+  // Append a message unless it's already present (dedupe socket echo vs REST response).
+  const addMessage = (message) =>
+    setMessages((current) => (current.some((m) => m._id === message._id) ? current : [...current, message]));
 
-    socket.emit("chat:join", chatId);
+  useEffect(() => {
+    if (!chatId) return undefined;
+    if (socket) socket.emit("chat:join", chatId);
+
     const loadMessages = async () => {
       const { data } = await api.get(`/chats/${chatId}/messages`);
       setMessages(data);
@@ -51,36 +55,49 @@ export const ChatPage = () => {
     loadMessages();
 
     const handleNewMessage = (message) => {
-      if (message.chat === chatId) setMessages((current) => [...current, message]);
+      if (message.chat === chatId) addMessage(message);
     };
+    socket?.on("message:new", handleNewMessage);
 
-    socket.on("message:new", handleNewMessage);
-    return () => socket.off("message:new", handleNewMessage);
+    // Polling fallback for hosts without WebSockets (e.g. serverless / Vercel).
+    const poll = setInterval(() => {
+      if (!socket?.connected) loadMessages();
+    }, 4000);
+
+    return () => {
+      socket?.off("message:new", handleNewMessage);
+      clearInterval(poll);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, socket]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const send = (event) => {
+  // Send over REST so it works on any host (serverless included); the server
+  // also broadcasts via Socket.io when available for instant delivery.
+  const send = async (event) => {
     event.preventDefault();
-    if (!content.trim() || !peer || !socket) return;
-
-    socket.emit("message:send", { chatId, receiverId: peer._id, content }, (response) => {
-      if (response?.ok) setContent("");
-    });
+    if (!content.trim() || !peer) return;
+    const text = content;
+    setContent("");
+    try {
+      const { data } = await api.post(`/chats/${chatId}/messages`, { content: text });
+      addMessage(data);
+    } catch {
+      setContent(text); // restore on failure so the user can retry
+    }
   };
 
-  // Emits an already-uploaded voice clip; resolves once the server acks so the
-  // recorder can clear its preview. The new message arrives via "message:new".
-  const sendVoice = (audio) =>
-    new Promise((resolve, reject) => {
-      if (!peer || !socket) return reject(new Error("Not connected"));
-      socket.emit("message:send", { chatId, receiverId: peer._id, type: "voice", audio }, (response) => {
-        if (response?.ok) resolve(response.message);
-        else reject(new Error(response?.message || "Failed to send voice message"));
-      });
-    });
+  // Sends an already-uploaded voice clip; resolves once saved so the recorder
+  // can clear its preview.
+  const sendVoice = async (audio) => {
+    if (!peer) throw new Error("Not connected");
+    const { data } = await api.post(`/chats/${chatId}/messages`, { type: "voice", audio });
+    addMessage(data);
+    return data;
+  };
 
   // Validate a selected/dropped file and stage it for preview before sending.
   const stageFile = (fileList) => {
@@ -96,7 +113,7 @@ export const ChatPage = () => {
 
   // Upload the staged file, then broadcast it as a "file" message over the socket.
   const sendAttachment = async () => {
-    if (!pendingFile || !peer || !socket) return;
+    if (!pendingFile || !peer) return;
     setAttaching(true);
     setAttachError("");
     setAttachProgress(0);
@@ -109,12 +126,8 @@ export const ChatPage = () => {
           if (event.total) setAttachProgress(Math.round((event.loaded / event.total) * 100));
         }
       });
-      await new Promise((resolve, reject) => {
-        socket.emit("message:send", { chatId, receiverId: peer._id, type: "file", file: data }, (response) => {
-          if (response?.ok) resolve();
-          else reject(new Error(response?.message || "Failed to send file"));
-        });
-      });
+      const { data: message } = await api.post(`/chats/${chatId}/messages`, { type: "file", file: data });
+      addMessage(message);
       setPendingFile(null);
     } catch (err) {
       setAttachError(err.response?.data?.message || err.message || "Failed to send file");
@@ -262,7 +275,7 @@ export const ChatPage = () => {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={!peer || !socket}
+                disabled={!peer}
                 aria-label="Attach file"
                 className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-xl border border-line-strong bg-surface text-muted transition hover:border-primary hover:text-accent disabled:opacity-50"
               >
@@ -278,7 +291,7 @@ export const ChatPage = () => {
                 placeholder="Write a message"
               />
               <Button className="px-4 py-3"><Send className="h-4 w-4" /> Send</Button>
-              <VoiceRecorder chatId={chatId} onSend={sendVoice} disabled={!peer || !socket} />
+              <VoiceRecorder chatId={chatId} onSend={sendVoice} disabled={!peer} />
             </form>
           </>
         ) : (

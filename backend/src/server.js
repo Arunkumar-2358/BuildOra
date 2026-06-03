@@ -17,6 +17,8 @@ await ensureAdmin();
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });
 
+// Expose io to controllers so REST endpoints can broadcast in real time.
+app.set("io", io);
 attachSocketHandlers(io);
 
 server.listen(PORT, () => {
