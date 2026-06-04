@@ -35,6 +35,10 @@ export const errorHandler = (err, req, res, next) => {
 
   res.status(statusCode).json({
     message,
+    // Surface a machine-readable code for the client (e.g. SUBSCRIPTION_REQUIRED).
+    // Mongo's numeric duplicate-key code (11000) is intentionally excluded.
+    code: typeof err.code === "string" ? err.code : undefined,
+    ...(err.details ? { details: err.details } : {}),
     stack: process.env.NODE_ENV === "production" ? undefined : err.stack
   });
 };

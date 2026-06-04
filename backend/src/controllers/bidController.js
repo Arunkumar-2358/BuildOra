@@ -1,6 +1,7 @@
 import Bid from "../models/Bid.js";
 import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
+import { assertCanBid, consumeFreeBid } from "../services/subscriptionService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { upsertPaymentForBid } from "../utils/payments.js";
 import { notifyProjectOwner } from "./projectController.js";
@@ -19,6 +20,15 @@ export const createBid = asyncHandler(async (req, res) => {
   }
 
   const existingBid = await Bid.findOne({ project: project._id, contractor: req.user._id });
+
+  // Revenue gate: verify subscription / free-trial quota before accepting a bid.
+  // Throws 402 (with a machine-readable code) when the contractor must subscribe.
+  const { consumeFreeBid: shouldConsumeFreeBid } = await assertCanBid({
+    user: req.user,
+    project,
+    isNewBid: !existingBid
+  });
+
   if (existingBid) {
     existingBid.quotationAmount = req.body.quotationAmount;
     existingBid.estimatedDuration = req.body.estimatedDuration;
@@ -38,6 +48,10 @@ export const createBid = asyncHandler(async (req, res) => {
     estimatedDuration: req.body.estimatedDuration,
     proposalMessage: req.body.proposalMessage
   });
+
+  // First bid on this project for a free-tier contractor — burn one trial credit
+  // now that the bid has actually persisted.
+  if (shouldConsumeFreeBid) await consumeFreeBid(req.user._id);
 
   await notifyProjectOwner({ project, bid });
   res.status(201).json(await bid.populate("contractor", "name city profileImage contractorProfile"));

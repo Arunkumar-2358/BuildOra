@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import app from "./app.js";
 import { corsOptions } from "./config/cors.js";
 import { connectDB } from "./config/db.js";
+import { registerCron } from "./cron/index.js";
 import { attachSocketHandlers } from "./sockets/chatSocket.js";
 import { ensureAdmin } from "./utils/ensureAdmin.js";
 
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 await connectDB();
 await ensureAdmin();
+registerCron();
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });

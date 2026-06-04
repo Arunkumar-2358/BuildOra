@@ -1,4 +1,4 @@
-import { ArrowRight, MapPin, Timer } from "lucide-react";
+import { ArrowRight, Crown, MapPin, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { currency } from "../utils/format";
 
@@ -9,9 +9,16 @@ export const ProjectCard = ({ project }) => (
   >
     <div className="mb-4 flex items-start justify-between gap-3">
       <div>
-        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold capitalize text-accent">
-          {project.category}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold capitalize text-accent">
+            {project.category}
+          </span>
+          {project.visibility === "premium" && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-bold text-gold">
+              <Crown className="h-3 w-3" /> Premium
+            </span>
+          )}
+        </div>
         <h3 className="mt-3 text-lg font-bold text-content transition group-hover:text-accent">{project.title}</h3>
       </div>
       <span className="grid h-9 w-9 place-items-center rounded-xl bg-surface-2 transition group-hover:bg-primary">

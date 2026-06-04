@@ -10,8 +10,12 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { connectDB } from "../config/db.js";
 import Bid from "../models/Bid.js";
+import Project from "../models/Project.js";
+import { getSettings } from "../services/settingsService.js";
 import { ensureAdmin } from "../utils/ensureAdmin.js";
 import { setPaymentStatusForProject, upsertPaymentForBid } from "../utils/payments.js";
+import { isPremiumProject } from "../utils/premium.js";
+import { seedPlans } from "./plans.js";
 
 dotenv.config();
 
@@ -23,6 +27,26 @@ const run = async () => {
   process.env.ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@12345";
   const admin = await ensureAdmin();
   console.log(`✓ Admin: ${admin?.email}`);
+
+  // Subscription plan catalog + platform settings (3% commission, free-bid quota).
+  const planCount = await seedPlans();
+  console.log(`✓ Seeded ${planCount} subscription plan(s) + platform settings`);
+
+  // Backfill premium visibility on existing projects from current premium rules.
+  const settings = await getSettings();
+  const projects = await Project.find().select("budget category visibility");
+  let visUpdated = 0;
+  for (const project of projects) {
+    const visibility = isPremiumProject(settings, { budget: project.budget, category: project.category })
+      ? "premium"
+      : "public";
+    if (project.visibility !== visibility) {
+      project.visibility = visibility;
+      await project.save();
+      visUpdated += 1;
+    }
+  }
+  console.log(`✓ Backfilled visibility on ${visUpdated} project(s)`);
 
   const acceptedBids = await Bid.find({ status: "accepted" }).populate("project");
   let count = 0;

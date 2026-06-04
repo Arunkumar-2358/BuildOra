@@ -21,6 +21,7 @@ export const ProjectDetails = () => {
   const [bids, setBids] = useState([]);
   const [bidForm, setBidForm] = useState({ quotationAmount: "", estimatedDuration: "", proposalMessage: "" });
   const [error, setError] = useState("");
+  const [gate, setGate] = useState(null);
   const [review, setReview] = useState(null);
   const [reviewsKey, setReviewsKey] = useState(0);
 
@@ -39,12 +40,22 @@ export const ProjectDetails = () => {
   const submitBid = async (event) => {
     event.preventDefault();
     setError("");
+    setGate(null);
     try {
       await api.post("/bids", { ...bidForm, project: id });
       await load();
       setBidForm({ quotationAmount: "", estimatedDuration: "", proposalMessage: "" });
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to submit bid");
+      const code = err.response?.data?.code;
+      // 402 = revenue gate (free trial exhausted / needs subscription / premium-only).
+      if (err.response?.status === 402 || ["SUBSCRIPTION_REQUIRED", "FREE_LIMIT_REACHED", "PREMIUM_REQUIRED"].includes(code)) {
+        setGate({
+          message: err.response?.data?.message || "Subscribe to keep bidding.",
+          premium: code === "PREMIUM_REQUIRED"
+        });
+      } else {
+        setError(err.response?.data?.message || "Unable to submit bid");
+      }
     }
   };
 
@@ -156,6 +167,15 @@ export const ProjectDetails = () => {
                 <Input label="Quotation amount" name="quotationAmount" type="number" value={bidForm.quotationAmount} onChange={(e) => setBidForm({ ...bidForm, quotationAmount: e.target.value })} required />
                 <Input label="Estimated duration" name="estimatedDuration" value={bidForm.estimatedDuration} onChange={(e) => setBidForm({ ...bidForm, estimatedDuration: e.target.value })} required />
                 <Textarea label="Proposal message" name="proposalMessage" value={bidForm.proposalMessage} onChange={(e) => setBidForm({ ...bidForm, proposalMessage: e.target.value })} required />
+                {gate && (
+                  <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4">
+                    <p className="flex items-center gap-2 text-sm font-bold text-amber-400">
+                      <Sparkles className="h-4 w-4" /> {gate.premium ? "Premium required" : "Upgrade to keep bidding"}
+                    </p>
+                    <p className="mt-1 text-sm text-muted">{gate.message}</p>
+                    <Button as={Link} to="/plans" className="mt-3 w-full">View plans</Button>
+                  </div>
+                )}
                 {error && <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</p>}
                 <Button><Send className="h-4 w-4" /> Submit bid</Button>
               </div>

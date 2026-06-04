@@ -1,4 +1,4 @@
-import { MessageCircle, Star } from "lucide-react";
+import { Crown, MessageCircle, Star } from "lucide-react";
 import { Button } from "./Button";
 
 export const ContractorCard = ({ contractor, onChat }) => (
@@ -10,7 +10,10 @@ export const ContractorCard = ({ contractor, onChat }) => (
         className="h-14 w-14 rounded-xl object-cover shadow-md"
       />
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-base font-bold text-content">{contractor.contractorProfile?.businessName || contractor.name}</h3>
+        <div className="flex items-center gap-1.5">
+          <h3 className="truncate text-base font-bold text-content">{contractor.contractorProfile?.businessName || contractor.name}</h3>
+          {contractor.contractorProfile?.isPremium && <Crown className="h-4 w-4 flex-shrink-0 text-gold" />}
+        </div>
         <p className="text-sm text-muted">{contractor.city || "Service area not added"}</p>
         <div className="mt-2 flex items-center gap-1 text-sm font-semibold text-success">
           <Star className="h-4 w-4 fill-current" />

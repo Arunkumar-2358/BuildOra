@@ -28,6 +28,8 @@ export const Layout = () => {
           ["Dashboard", "/dashboard"],
           user.role === "customer" ? ["Post Project", "/post-project"] : ["Browse Projects", "/browse-projects"],
           user.role === "customer" ? ["Find Pros", "/find-contractors"] : null,
+          user.role === "contractor" ? ["Membership", "/membership"] : null,
+          user.role === "contractor" ? ["Earnings", "/earnings"] : null,
           ["Chats", "/chat"],
           ["Profile", "/profile"]
         ].filter(Boolean);

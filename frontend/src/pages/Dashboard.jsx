@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { Button } from "../components/Button";
 import { ProjectCard } from "../components/ProjectCard";
+import { SubscriptionGate } from "../components/SubscriptionGate";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 
@@ -56,6 +57,8 @@ export const Dashboard = () => {
           </Button>
         </div>
       </section>
+
+      {user.role === "contractor" && <SubscriptionGate />}
 
       <section className="mt-6 grid gap-4 md:grid-cols-4">
         {[

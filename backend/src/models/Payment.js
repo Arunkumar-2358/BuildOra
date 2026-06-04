@@ -13,7 +13,7 @@ const paymentSchema = new mongoose.Schema(
     contractor: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
     amount: { type: Number, required: true }, // total project value
-    commissionRate: { type: Number, default: 0.1 }, // platform cut (10%)
+    commissionRate: { type: Number, default: 0.03 }, // platform cut (3%, see PlatformSettings)
     commission: { type: Number, required: true }, // amount * commissionRate
     contractorEarning: { type: Number, required: true }, // amount - commission
 
