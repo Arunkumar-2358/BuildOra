@@ -27,7 +27,7 @@ export const PaymentSuccess = () => {
 
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-xl flex-col items-center justify-center px-4 py-10 text-center">
-      <span className="grid h-20 w-20 place-items-center rounded-full bg-emerald-500/10 text-success">
+      <span className="grid h-20 w-20 place-items-center rounded-full bg-success/10 text-success">
         <CheckCircle2 className="h-12 w-12" />
       </span>
       <h1 className="mt-6 text-3xl font-extrabold text-content">Payment successful</h1>

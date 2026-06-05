@@ -63,9 +63,9 @@ export const MySubscription = () => {
       </div>
 
       {isActive && !isPremium && (
-        <div className="premium-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5 ring-1 ring-amber-500/30">
+        <div className="premium-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5 ring-1 ring-spark/30">
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/10 text-gold">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-spark/10 text-spark">
               <Crown className="h-5 w-5" />
             </span>
             <div>
@@ -78,8 +78,8 @@ export const MySubscription = () => {
       )}
 
       {isActive && remainingDays <= 7 && (
-        <div className="premium-card rounded-2xl p-5 ring-1 ring-amber-500/40">
-          <p className="font-bold text-amber-400">Renewal reminder</p>
+        <div className="premium-card rounded-2xl p-5 ring-1 ring-spark/40">
+          <p className="font-bold text-spark">Renewal reminder</p>
           <p className="mt-1 text-sm text-muted">
             Your {tier} plan expires in {remainingDays} day{remainingDays === 1 ? "" : "s"}. Renew now to keep
             receiving leads and bidding.

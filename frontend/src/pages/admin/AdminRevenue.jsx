@@ -70,15 +70,15 @@ export const AdminRevenue = () => {
             <AreaChart data={subMonthly}>
               <defs>
                 <linearGradient id="subrev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.7} />
-                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#D62D14" stopOpacity={0.7} />
+                  <stop offset="95%" stopColor="#D62D14" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
               <XAxis dataKey="label" tick={axisTick} axisLine={false} tickLine={false} />
               <YAxis tick={axisTick} axisLine={false} tickLine={false} width={70} tickFormatter={inr} />
               <Tooltip formatter={(v) => currency(v)} contentStyle={tooltipStyle} />
-              <Area type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={2} fill="url(#subrev)" />
+              <Area type="monotone" dataKey="revenue" stroke="#D62D14" strokeWidth={2} fill="url(#subrev)" />
             </AreaChart>
           </ChartCard>
           <ChartCard title="New subscriptions (monthly)" empty={!subMonthly.length}>
@@ -87,7 +87,7 @@ export const AdminRevenue = () => {
               <XAxis dataKey="label" tick={axisTick} axisLine={false} tickLine={false} />
               <YAxis tick={axisTick} axisLine={false} tickLine={false} allowDecimals={false} width={30} />
               <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="count" fill="#10B981" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="count" fill="#0F9D6B" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ChartCard>
         </div>
@@ -105,15 +105,15 @@ export const AdminRevenue = () => {
             <AreaChart data={comMonthly}>
               <defs>
                 <linearGradient id="comrev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.7} />
-                  <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#0F9D6B" stopOpacity={0.7} />
+                  <stop offset="95%" stopColor="#0F9D6B" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
               <XAxis dataKey="label" tick={axisTick} axisLine={false} tickLine={false} />
               <YAxis tick={axisTick} axisLine={false} tickLine={false} width={70} tickFormatter={inr} />
               <Tooltip formatter={(v) => currency(v)} contentStyle={tooltipStyle} />
-              <Area type="monotone" dataKey="commission" stroke="#10B981" strokeWidth={2} fill="url(#comrev)" />
+              <Area type="monotone" dataKey="commission" stroke="#0F9D6B" strokeWidth={2} fill="url(#comrev)" />
             </AreaChart>
           </ChartCard>
           <ChartCard title="Revenue by category" empty={!c.byCategory.length}>
@@ -122,7 +122,7 @@ export const AdminRevenue = () => {
               <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} tickFormatter={inr} />
               <YAxis type="category" dataKey="category" tick={axisTick} axisLine={false} tickLine={false} width={90} className="capitalize" />
               <Tooltip formatter={(v) => currency(v)} contentStyle={tooltipStyle} />
-              <Bar dataKey="commission" fill="#6366F1" radius={[0, 6, 6, 0]} />
+              <Bar dataKey="commission" fill="#FB7A1E" radius={[0, 6, 6, 0]} />
             </BarChart>
           </ChartCard>
         </div>
@@ -132,7 +132,7 @@ export const AdminRevenue = () => {
             <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} tickFormatter={inr} />
             <YAxis type="category" dataKey="city" tick={axisTick} axisLine={false} tickLine={false} width={90} />
             <Tooltip formatter={(v) => currency(v)} contentStyle={tooltipStyle} />
-            <Bar dataKey="commission" fill="#F59E0B" radius={[0, 6, 6, 0]} />
+            <Bar dataKey="commission" fill="#8C1A0B" radius={[0, 6, 6, 0]} />
           </BarChart>
         </ChartCard>
       </Section>

@@ -39,7 +39,7 @@ export const RatingSummary = ({ summary, activeRating, onFilterRating }) => {
           </p>
         </div>
         {wouldHireAgainPercent !== null && (
-          <div className="ml-auto rounded-xl bg-emerald-500/10 px-4 py-3 text-center">
+          <div className="ml-auto rounded-xl bg-success/10 px-4 py-3 text-center">
             <p className="flex items-center justify-center gap-1.5 text-2xl font-extrabold text-success">
               <ThumbsUp className="h-5 w-5" />
               {wouldHireAgainPercent}%
@@ -66,7 +66,7 @@ export const RatingSummary = ({ summary, activeRating, onFilterRating }) => {
             >
               <span className="w-10 text-sm font-semibold text-muted">{star} ★</span>
               <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
-                <span className="block h-full rounded-full bg-amber-400" style={{ width: `${percent}%` }} />
+                <span className="block h-full rounded-full bg-spark" style={{ width: `${percent}%` }} />
               </span>
               <span className="w-8 text-right text-sm text-muted">{count}</span>
             </button>

@@ -1,4 +1,5 @@
 import { Check, Crown, Zap } from "lucide-react";
+import { cn } from "../lib/cn";
 import { rupees } from "../services/subscriptions";
 import { currency } from "../utils/format";
 import { Button } from "./Button";
@@ -11,27 +12,32 @@ export const PlanCard = ({ plan, onSubscribe, busy, current, featured }) => {
   const Icon = isPremium ? Crown : Zap;
 
   return (
-    <div className={`premium-card relative flex flex-col rounded-2xl p-6 ${featured ? "ring-2 ring-primary shadow-glow" : ""}`}>
+    <div className={cn("premium-card relative flex flex-col rounded-3xl p-6", featured && "ring-2 ring-brand shadow-glow")}>
+      {featured && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-glow-sm">
+          Most popular
+        </span>
+      )}
       {plan.discountPercent > 0 && (
-        <span className="absolute right-4 top-4 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-success">
+        <span className="absolute right-4 top-4 rounded-full bg-success/10 px-3 py-1 text-xs font-bold text-success">
           Save {plan.discountPercent}%
         </span>
       )}
 
       <div className="flex items-center gap-3">
-        <span className={`grid h-10 w-10 place-items-center rounded-xl ${isPremium ? "bg-amber-500/10 text-gold" : "bg-primary/10 text-accent"}`}>
+        <span className={cn("grid h-11 w-11 place-items-center rounded-xl", isPremium ? "bg-spark/10 text-spark" : "bg-brand/10 text-brand")}>
           <Icon className="h-5 w-5" />
         </span>
         <div>
-          <p className="text-lg font-extrabold text-content">{plan.name}</p>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+          <p className="text-lg font-bold text-content">{plan.name}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-subtle">
             {plan.tier} · {plan.durationMonths} mo
           </p>
         </div>
       </div>
 
       <div className="mt-5">
-        <p className="text-4xl font-extrabold text-content">{currency(rupees(plan.pricePaise))}</p>
+        <p className="font-display text-4xl font-bold tracking-tight text-content tabular">{currency(rupees(plan.pricePaise))}</p>
         <p className="mt-1 text-sm text-muted">
           {currency(perMonth)}/mo
           {savings > 0 && <span className="ml-2 text-subtle line-through">{currency(rupees(plan.basePricePaise))}</span>}
@@ -41,13 +47,14 @@ export const PlanCard = ({ plan, onSubscribe, busy, current, featured }) => {
       <ul className="mt-5 flex-1 space-y-2.5">
         {plan.features.map((f) => (
           <li key={f} className="flex items-start gap-2 text-sm text-muted">
-            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" /> {f}
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> {f}
           </li>
         ))}
       </ul>
 
       <Button
         className="mt-6 w-full"
+        size="lg"
         variant={featured ? "primary" : "secondary"}
         disabled={busy || current}
         onClick={() => onSubscribe(plan)}

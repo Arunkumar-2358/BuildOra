@@ -1,7 +1,9 @@
 import { AlertTriangle, ArrowRight, Crown, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { cn } from "../lib/cn";
 import { fetchMySubscription } from "../services/subscriptions";
+import { Progress } from "./ui/Progress";
 
 /**
  * Compact subscription banner for the contractor dashboard. Self-fetches the
@@ -24,19 +26,19 @@ export const SubscriptionGate = () => {
     const expiring = remainingDays <= 7;
     const Icon = isPremium ? Crown : Zap;
     return (
-      <div className={`premium-card mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5 ${expiring ? "ring-1 ring-amber-500/40" : ""}`}>
+      <div className={cn("premium-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5", expiring && "ring-1 ring-spark/40")}>
         <div className="flex items-center gap-3">
-          <span className={`grid h-10 w-10 place-items-center rounded-xl ${isPremium ? "bg-amber-500/10 text-gold" : "bg-primary/10 text-accent"}`}>
+          <span className={cn("grid h-11 w-11 place-items-center rounded-xl", isPremium ? "bg-spark/10 text-spark" : "bg-brand/10 text-brand")}>
             <Icon className="h-5 w-5" />
           </span>
           <div>
-            <p className="font-extrabold capitalize text-content">{tier} membership active</p>
-            <p className={`text-sm ${expiring ? "font-semibold text-amber-400" : "text-muted"}`}>
+            <p className="font-bold capitalize text-content">{tier} membership active</p>
+            <p className={cn("text-sm", expiring ? "font-semibold text-spark" : "text-muted")}>
               {remainingDays} day{remainingDays === 1 ? "" : "s"} remaining{expiring ? " · renew soon" : ""}
             </p>
           </div>
         </div>
-        <Link to="/membership" className="inline-flex items-center gap-1 text-sm font-bold text-accent hover:underline">
+        <Link to="/membership" className="inline-flex items-center gap-1 text-sm font-bold text-brand hover:underline">
           Manage <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
@@ -48,14 +50,14 @@ export const SubscriptionGate = () => {
   const expired = status === "expired";
 
   return (
-    <div className={`premium-card mt-6 rounded-2xl p-5 ${exhausted || expired ? "ring-1 ring-amber-500/40" : ""}`}>
+    <div className={cn("premium-card rounded-2xl p-5", (exhausted || expired) && "ring-1 ring-spark/40")}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/10 text-amber-400">
+          <span className="grid h-11 w-11 place-items-center rounded-xl bg-spark/10 text-spark">
             <AlertTriangle className="h-5 w-5" />
           </span>
           <div>
-            <p className="font-extrabold text-content">
+            <p className="font-bold text-content">
               {expired ? "Your subscription expired" : `${left} of ${freeBidQuota} free bids left`}
             </p>
             <p className="text-sm text-muted">
@@ -67,19 +69,14 @@ export const SubscriptionGate = () => {
         </div>
         <Link
           to="/plans"
-          className="inline-flex items-center gap-1 rounded-xl bg-brand-gradient px-4 py-2 text-sm font-bold text-white shadow-glow hover:brightness-110"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-sm font-bold text-white shadow-glow transition hover:-translate-y-0.5"
         >
           View plans <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
       {!expired && freeBidQuota > 0 && (
-        <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-surface-2">
-          <div
-            className="h-full rounded-full bg-brand-gradient transition-all"
-            style={{ width: `${Math.min((freeBidsUsed / freeBidQuota) * 100, 100)}%` }}
-          />
-        </div>
+        <Progress className="mt-4" tone="spark" value={Math.min((freeBidsUsed / freeBidQuota) * 100, 100)} />
       )}
     </div>
   );

@@ -65,7 +65,7 @@ export const ReviewForm = ({ projectId, onSubmitted }) => {
 
       {/* Step 1 — overall rating (required) */}
       <div className="mt-5">
-        <p className="text-sm font-semibold text-muted">Overall rating <span className="text-red-400">*</span></p>
+        <p className="text-sm font-semibold text-muted">Overall rating <span className="text-brand">*</span></p>
         <div className="mt-2">
           <StarRating value={overallRating} onChange={setOverallRating} />
         </div>
@@ -113,7 +113,7 @@ export const ReviewForm = ({ projectId, onSubmitted }) => {
               onClick={() => toggleTag(value)}
               className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
                 tags.includes(value)
-                  ? "border-emerald-400 bg-emerald-500/15 text-success"
+                  ? "border-success/50 bg-success/10 text-success"
                   : "border-line-strong bg-surface-2 text-muted hover:border-line-strong"
               }`}
             >
@@ -165,7 +165,7 @@ export const ReviewForm = ({ projectId, onSubmitted }) => {
         </div>
       </div>
 
-      {error && <p className="mt-4 rounded-xl bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</p>}
+      {error && <p className="mt-4 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-semibold text-brand">{error}</p>}
 
       <Button className="mt-5 w-full" disabled={submitting}>
         {wouldHireAgain ? <ThumbsUp className="h-4 w-4" /> : <Send className="h-4 w-4" />}

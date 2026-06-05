@@ -20,7 +20,7 @@ export const StarDisplay = ({ value = 0, size = "sm", showValue = false, count }
         </div>
         <div className="absolute inset-0 flex overflow-hidden" style={{ width: `${(Math.min(value, 5) / 5) * 100}%` }}>
           {[1, 2, 3, 4, 5].map((star) => (
-            <Star key={star} className={`${stars} flex-shrink-0 fill-amber-400 text-amber-400`} />
+            <Star key={star} className={`${stars} flex-shrink-0 fill-spark text-spark`} />
           ))}
         </div>
       </div>
@@ -61,8 +61,8 @@ export const StarRating = ({ value = 0, onChange, size = "lg", name = "rating", 
           />
           <Star
             className={`${stars} transition-colors ${
-              star <= active ? "fill-amber-400 text-amber-400" : "text-subtle hover:text-amber-300"
-            } ${value === star ? "drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]" : ""}`}
+              star <= active ? "fill-spark text-spark" : "text-subtle hover:text-spark/60"
+            } ${value === star ? "drop-shadow-[0_0_6px_rgba(251,122,30,0.5)]" : ""}`}
           />
           <span className="sr-only">{star} star{star > 1 ? "s" : ""}</span>
         </label>

@@ -45,7 +45,7 @@ export const AdminOverview = () => {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Link to="/admin/approvals" className="premium-card rounded-2xl p-5 transition hover:border-primary/50 hover:shadow-glow">
-          <ShieldAlert className="h-6 w-6 text-amber-400" />
+          <ShieldAlert className="h-6 w-6 text-spark" />
           <p className="mt-3 font-extrabold text-content">Review contractors</p>
           <p className="mt-1 text-sm text-muted">{data.pendingApprovals} pending in the verification queue.</p>
         </Link>

@@ -1,265 +1,292 @@
+import { motion } from "framer-motion";
 import {
   ArrowRight,
-  BadgeCheck, CheckCircle2, ClipboardList, HardHat, MessageCircle, MoveRight, ShieldCheck, Sparkles, Star, TrendingUp
+  BadgeCheck,
+  CheckCircle2,
+  Clock,
+  Instagram,
+  Linkedin,
+  MapPin,
+  ShieldCheck,
+  Star,
+  Twitter
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ease } from "../lib/motion";
 import { Button } from "../components/Button";
-import { ContractorCard } from "../components/ContractorCard";
+import { Features } from "../components/landing/Features";
+import { HowItWorks } from "../components/landing/HowItWorks";
+import { PricingPreview } from "../components/landing/PricingPreview";
+import { Testimonials } from "../components/landing/Testimonials";
+import { Container } from "../components/ui/Container";
+import { Counter } from "../components/ui/Counter";
+import { Logo } from "../components/ui/Logo";
+import { Marquee } from "../components/ui/Marquee";
 
-const sampleContractors = [
-  {
-    _id: "1",
-    name: "Urban Nest Studio",
-    city: "Hyderabad",
-    contractorProfile: {
-      rating: 4.8,
-      services: ["interior", "modular kitchen", "renovation"],
-      bio: "Turnkey interiors with transparent budgets, site updates, and premium finishes."
-    }
-  },
-  {
-    _id: "2",
-    name: "StoneLine Builds",
-    city: "Bengaluru",
-    contractorProfile: {
-      rating: 4.7,
-      services: ["construction", "architecture", "civil"],
-      bio: "Residential construction team for villas, duplexes, extensions, and structural work."
-    }
-  },
-  {
-    _id: "3",
-    name: "Craft Axis",
-    city: "Chennai",
-    contractorProfile: {
-      rating: 4.9,
-      services: ["woodwork", "interior", "lighting"],
-      bio: "Detail-led execution for premium homes with curated material and lighting packages."
-    }
-  }
+const item = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } }
+};
+
+const STATS = [
+  { value: 12, prefix: "₹", suffix: " Cr+", label: "Project demand" },
+  { value: 2400, suffix: "+", label: "Verified pros" },
+  { value: 4.8, decimals: 1, label: "Avg rating", star: true },
+  { value: 24, suffix: " min", label: "Avg first reply" }
 ];
 
-const activeLeads = [
-  ["Villa shell construction", "Hyderabad", "₹42L", "8 bids"],
-  ["3BHK premium interiors", "Bengaluru", "₹18L", "12 bids"],
-  ["Cafe renovation", "Chennai", "₹9L", "6 bids"]
+const TRADES = [
+  "Interior design", "Civil construction", "Modular kitchen", "Home renovation",
+  "Architecture", "Plumbing", "Electrical", "Painting", "Waterproofing",
+  "False ceiling", "Landscaping", "Carpentry"
 ];
+
+const HeroVisual = () => (
+  <div className="relative">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.7, ease, delay: 0.15 }}
+      className="premium-card overflow-hidden rounded-[1.75rem] p-2 shadow-xl"
+    >
+      <img
+        src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1100&q=80"
+        alt="Premium interior project delivered through BuildOra"
+        className="h-[24rem] w-full rounded-[1.25rem] object-cover md:h-[32rem]"
+        loading="eager"
+      />
+    </motion.div>
+
+    {/* Floating live-lead card */}
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease, delay: 0.5 }}
+      className="absolute -bottom-6 -left-3 w-[16.5rem] animate-float md:-left-8"
+    >
+      <div className="glass rounded-2xl p-4 shadow-lg">
+        <div className="flex items-center justify-between">
+          <p className="text-eyebrow uppercase text-subtle">Live lead board</p>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" /> Live
+          </span>
+        </div>
+        <div className="mt-3 space-y-2">
+          {[["Villa shell", "₹42L", "8 bids"], ["3BHK interiors", "₹18L", "12 bids"]].map(([t, b, n]) => (
+            <div key={t} className="flex items-center justify-between rounded-xl bg-surface-2/70 p-2.5">
+              <p className="text-sm font-bold text-content">{t}</p>
+              <div className="text-right">
+                <p className="text-sm font-extrabold text-content tabular">{b}</p>
+                <p className="text-[0.7rem] font-bold text-brand">{n}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+
+    {/* Floating rating chip */}
+    <motion.div
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease, delay: 0.7 }}
+      className="absolute -right-3 top-8 animate-float-slow md:-right-6"
+    >
+      <div className="glass flex items-center gap-2.5 rounded-2xl px-3.5 py-2.5 shadow-lg">
+        <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-sm font-bold text-white">UN</span>
+        <div>
+          <p className="text-sm font-bold text-content">Bid accepted</p>
+          <p className="inline-flex items-center gap-1 text-xs font-semibold text-muted">
+            <Star className="h-3 w-3 fill-spark text-spark" /> 4.9 · Urban Nest
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  </div>
+);
 
 export const LandingPage = () => (
-  <main className="text-content">
-    <section className="relative overflow-hidden border-b border-line/60 bg-mesh-radial">
-      <div className="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-10 px-4 py-12 lg:grid-cols-[1.02fr_0.98fr]">
-        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="relative z-10">
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-bold text-accent shadow-sm backdrop-blur-xl">
-            <Sparkles className="h-4 w-4 text-success" />
-            India’s Modern Construction Marketplace
-          </p>
-          <h1 className="max-w-4xl text-5xl font-extrabold tracking-tight md:text-7xl">
-            Find Trusted Builders & Interior Experts in Minutes
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-            A premium marketplace where homeowners post construction and interior requirements, compare contractor quotations, and close projects with realtime coordination.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button as={Link} to="/register" className="px-6 py-3">
-              Post a project <ArrowRight className="h-4 w-4" />
+  <main className="overflow-hidden text-content">
+    {/* ============================== HERO ============================== */}
+    <section className="relative">
+      <div className="absolute inset-0 -z-10 bg-mesh-radial" />
+      <div className="absolute inset-0 -z-10 blueprint-grid [mask-image:radial-gradient(ellipse_at_top,black,transparent_75%)] opacity-70" />
+
+      <Container className="grid items-center gap-14 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+        <motion.div initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}>
+          <motion.span
+            variants={item}
+            className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-1.5 text-sm font-semibold text-brand"
+          >
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" />
+            India&rsquo;s modern construction marketplace
+          </motion.span>
+
+          <motion.h1
+            variants={item}
+            className="mt-6 text-balance font-display text-display font-bold leading-[1.03] tracking-tight"
+          >
+            Build it right — with pros you can{" "}
+            <span className="brand-text-gradient">trust</span>.
+          </motion.h1>
+
+          <motion.p variants={item} className="mt-6 max-w-xl text-lg leading-8 text-muted">
+            Post your construction or interior project, compare verified contractor bids side by side, and manage
+            everything — chat, floor plans and payments — in one beautiful workspace.
+          </motion.p>
+
+          <motion.div variants={item} className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button as={Link} to="/register" size="lg">
+              Post your project <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button as={Link} to="/register" variant="secondary" className="px-6 py-3">
-              Join as contractor
+            <Button as={Link} to="/register" variant="secondary" size="lg">
+              Join as a contractor
             </Button>
-          </div>
-          <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">
-            {[
-              ["₹12Cr+", "project demand"],
-              ["4.8/5", "contractor rating"],
-              ["24 min", "avg first reply"]
-            ].map(([value, label]) => (
-              <div key={label} className="glass rounded-2xl p-4">
-                <p className="text-2xl font-extrabold">{value}</p>
-                <p className="mt-1 text-xs font-semibold uppercase text-muted">{label}</p>
+          </motion.div>
+
+          <motion.div variants={item} className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-muted">
+            {["Free to post", "2,400+ verified pros", "No spam, ever"].map((t) => (
+              <span key={t} className="inline-flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-success" /> {t}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div variants={item} className="mt-10 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {STATS.map((s) => (
+              <div key={s.label} className="rounded-2xl border border-line bg-surface/70 p-3.5 backdrop-blur">
+                <p className="font-display text-2xl font-bold tracking-tight text-content tabular">
+                  <Counter value={s.value} prefix={s.prefix} suffix={s.suffix} decimals={s.decimals} />
+                  {s.star && <Star className="ml-0.5 inline h-4 w-4 -translate-y-0.5 fill-spark text-spark" />}
+                </p>
+                <p className="mt-1 text-xs font-semibold text-subtle">{s.label}</p>
               </div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="relative z-10">
-          <div className="premium-card overflow-hidden rounded-2xl p-3 shadow-glow">
-            <img
-              src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=90"
-              alt="Premium home construction and interior"
-              className="h-[24rem] w-full rounded-2xl object-cover md:h-[34rem]"
-            />
-          </div>
-          <div className="absolute -bottom-6 left-4 right-4 rounded-2xl border border-line/40 bg-surface/90 p-4 shadow-crisp backdrop-blur-xl md:left-8 md:right-auto md:w-[25rem]">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase text-muted">Live lead board</p>
-                <h3 className="mt-1 text-lg font-extrabold text-content">High-intent requirements</h3>
-              </div>
-              <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold text-success">Live</span>
-            </div>
-            <div className="mt-4 space-y-3">
-              {activeLeads.map(([title, city, budget, bids]) => (
-                <div key={title} className="flex items-center justify-between gap-3 rounded-xl bg-surface-2/80 p-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-content">{title}</p>
-                    <p className="text-xs font-semibold text-muted">{city}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-extrabold text-content">{budget}</p>
-                    <p className="text-xs font-semibold text-accent">{bids}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </div>
+        <HeroVisual />
+      </Container>
     </section>
 
-    <section id="how" className="py-20">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-10 grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:items-end">
-          <div>
-            <p className="font-bold text-accent">How it works</p>
-            <h2 className="mt-2 text-3xl font-extrabold md:text-5xl">From requirement to awarded contractor.</h2>
-          </div>
-          <p className="text-base leading-7 text-muted">
-            Buildora turns a messy offline process into a clean quote pipeline: structured requirements, competing bids, and one-to-one chat in the same workspace.
-          </p>
-        </div>
+    {/* ============================ TRUST STRIP ============================ */}
+    <section className="border-y border-line bg-surface/50 py-7">
+      <Container>
+        <p className="mb-5 text-center text-eyebrow uppercase text-subtle">
+          Every trade, across India&rsquo;s major cities
+        </p>
+        <Marquee>
+          {TRADES.map((t) => (
+            <span key={t} className="inline-flex items-center gap-2 whitespace-nowrap text-base font-semibold text-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand/50" />
+              {t}
+            </span>
+          ))}
+        </Marquee>
+      </Container>
+    </section>
+
+    <HowItWorks />
+    <Features />
+
+    {/* ============================ VALUE BAND ============================ */}
+    <section className="py-8">
+      <Container>
         <div className="grid gap-5 md:grid-cols-3">
           {[
-            [ClipboardList, "Post a sharp brief", "Capture budget, location, timeline, category, and reference plans in minutes."],
-            [HardHat, "Compare serious bids", "Contractors submit quotation amount, duration, and a scoped proposal."],
-            [MessageCircle, "Close with confidence", "Accept, reject, and chat with timestamps so every decision stays traceable."]
-          ].map(([Icon, title, copy], index) => (
-            <div key={title} className="premium-card rounded-2xl p-6 transition hover:-translate-y-1 hover:shadow-glow">
-              <div className="flex items-center justify-between">
-                <Icon className="h-9 w-9 text-success" />
-                <span className="text-sm font-extrabold text-subtle">0{index + 1}</span>
-              </div>
-              <h3 className="mt-6 text-xl font-bold text-content">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-muted">{copy}</p>
+            [ShieldCheck, "Verified & role-gated", "Every action is protected and built for clean marketplace operations you can trust."],
+            [MapPin, "Location-smart matching", "Discover nearby pros and projects with map-aware, distance-smart search."],
+            [Clock, "Fast, traceable decisions", "Quotes, awards and chat are timestamped — so every decision stays accountable."]
+          ].map(([Icon, title, copy]) => (
+            <div key={title} className="rounded-2xl border border-line bg-surface/60 p-6">
+              <Icon className="h-7 w-7 text-brand" />
+              <h3 className="mt-4 text-lg font-bold text-content">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted">{copy}</p>
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
 
-    <section className="py-20">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div>
-          <p className="font-bold text-accent">Demo-ready workflow</p>
-          <h2 className="mt-2 text-3xl font-extrabold md:text-5xl">A marketplace cockpit founders can understand in 30 seconds.</h2>
-          <p className="mt-5 text-base leading-7 text-muted">
-            The UI is designed to show liquidity, quote quality, contractor trust, and customer progress immediately.
-          </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {["Role-based dashboards", "Bid status controls", "Realtime chat", "Contractor portfolio profiles"].map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 text-sm font-bold text-content">
-                <CheckCircle2 className="h-5 w-5 text-success" />
-                {item}
-              </div>
-            ))}
+    <Testimonials />
+    <PricingPreview />
+
+    {/* ============================= FINAL CTA ============================= */}
+    <section className="py-12 md:py-20">
+      <Container>
+        <div className="relative overflow-hidden rounded-[2rem] bg-brand-gradient px-6 py-16 text-center text-white shadow-glow md:px-16 md:py-20">
+          <div className="absolute inset-0 blueprint-grid opacity-20" />
+          <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/15 blur-3xl" />
+          <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-spark/30 blur-3xl" />
+          <div className="relative mx-auto max-w-2xl">
+            <h2 className="text-balance font-display text-3xl font-bold tracking-tight md:text-5xl">
+              Ready to build something great?
+            </h2>
+            <p className="mt-4 text-lg text-white/85">
+              Join homeowners and contractors building better, together — on India&rsquo;s most trusted construction marketplace.
+            </p>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Button as={Link} to="/register" variant="ghost" size="lg" className="bg-white text-brand shadow-lg hover:bg-white/90">
+                Post your project <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button as={Link} to="/register" variant="ghost" size="lg" className="border-2 border-white/50 text-white hover:bg-white/10">
+                Join as a contractor
+              </Button>
+            </div>
+            <p className="mt-6 text-sm text-white/70">Free to post · No commission to post · Cancel anytime</p>
           </div>
         </div>
-        <div className="rounded-2xl bg-surface p-4 shadow-soft">
-          <div className="rounded-2xl bg-surface-deep p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line/50 pb-4">
-              <div>
-                <p className="text-xs font-bold uppercase text-muted">Project pipeline</p>
-                <h3 className="text-xl font-extrabold text-content">Premium interiors, Jubilee Hills</h3>
-              </div>
-              <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold text-accent">Award pending</span>
-            </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {[
-                ["Budget", "₹22L"],
-                ["Timeline", "12 weeks"],
-                ["Quotes", "9"]
-              ].map(([label, value]) => (
-                <div key={label} className="rounded-xl bg-surface p-4">
-                  <p className="text-xs font-bold uppercase text-muted">{label}</p>
-                  <p className="mt-1 text-2xl font-extrabold text-content">{value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 space-y-3">
-              {["Urban Nest Studio", "Craft Axis", "StoneLine Builds"].map((name, index) => (
-                <div key={name} className="flex items-center justify-between rounded-xl border border-line p-3">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2 text-sm font-extrabold text-content">{index + 1}</span>
-                    <div>
-                      <p className="font-bold text-content">{name}</p>
-                      <p className="text-sm text-muted">Detailed quote submitted</p>
-                    </div>
-                  </div>
-                  <MoveRight className="h-5 w-5 text-accent" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      </Container>
     </section>
 
-    <section id="contractors" className="py-20">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+    {/* ============================== FOOTER ============================== */}
+    <footer className="border-t border-line">
+      <Container className="py-14">
+        <div className="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div>
-            <p className="font-bold text-accent">Top contractors</p>
-            <h2 className="mt-2 text-3xl font-extrabold md:text-5xl">Trust signals, not just listings.</h2>
+            <Logo />
+            <p className="mt-4 max-w-xs text-sm leading-6 text-muted">
+              The modern marketplace where great construction and interior projects begin — and get built.
+            </p>
+            <div className="mt-5 flex gap-2">
+              {[Twitter, Linkedin, Instagram].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  aria-label="Social link"
+                  className="grid h-9 w-9 place-items-center rounded-xl border border-line-strong text-muted transition hover:border-brand/40 hover:text-brand"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
           </div>
-          <Button as={Link} to="/register" variant="secondary">
-            Explore contractors <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {sampleContractors.map((contractor) => (
-            <ContractorCard key={contractor._id} contractor={contractor} />
+          {[
+            ["Product", [["How it works", "/#how"], ["Features", "/#features"], ["Pricing", "/#pricing"], ["Get started", "/register"]]],
+            ["Company", [["About", "#"], ["Careers", "#"], ["Blog", "#"], ["Contact", "#"]]],
+            ["Legal", [["Privacy", "#"], ["Terms", "#"], ["Security", "#"], ["Cookies", "#"]]]
+          ].map(([title, links]) => (
+            <div key={title}>
+              <p className="text-sm font-bold text-content">{title}</p>
+              <ul className="mt-4 space-y-2.5">
+                {links.map(([label, href]) => (
+                  <li key={label}>
+                    <a href={href} className="text-sm text-muted transition hover:text-brand">
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
         </div>
-      </div>
-    </section>
-
-    <section className="py-20 text-content">
-      <div className="mx-auto grid max-w-7xl gap-5 px-4 md:grid-cols-3">
-        {[
-          [ShieldCheck, "Verified workflow", "Every core action is role-gated, protected, and designed for clean marketplace operations."],
-          [TrendingUp, "Founder narrative", "Show project demand, contractor supply, quote velocity, and monetizable transaction behavior."],
-          [BadgeCheck, "Premium trust", "Profiles, portfolios, ratings, bids, and chat create a credible decision layer."]
-        ].map(([Icon, title, copy]) => (
-          <div key={title} className="rounded-2xl border border-line bg-surface/60 p-6">
-            <Icon className="h-7 w-7 text-accent" />
-            <h3 className="mt-4 text-lg font-bold">{title}</h3>
-            <p className="mt-2 text-sm leading-6 text-muted">{copy}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section className="py-20">
-      <div className="mx-auto grid max-w-7xl gap-5 px-4 md:grid-cols-3">
-        {[
-          ["We found three serious bids in two days.", "Priya M., Homeowner"],
-          ["The chat history kept our renovation decisions tidy.", "Rohan S., Customer"],
-          ["Lead quality is much better than generic listing apps.", "Urban Nest Studio"]
-        ].map(([quote, author]) => (
-          <blockquote key={quote} className="premium-card rounded-2xl p-6 text-lg font-semibold leading-8">
-            <div className="mb-4 flex gap-1 text-success">
-              {[1, 2, 3, 4, 5].map((star) => <Star key={star} className="h-4 w-4 fill-current" />)}
-            </div>
-            “{quote}”
-            <footer className="mt-4 text-sm font-bold text-muted">{author}</footer>
-          </blockquote>
-        ))}
-      </div>
-    </section>
-
-    <footer className="border-t border-line px-4 py-8 text-center text-sm text-muted">
-      Buildora © 2026. Construction and interiors, organized beautifully.
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-sm text-subtle sm:flex-row">
+          <p>© {new Date().getFullYear()} BuildOra. Construction & interiors, organised beautifully.</p>
+          <p className="inline-flex items-center gap-1.5">
+            <BadgeCheck className="h-4 w-4 text-brand" /> Made in India
+          </p>
+        </div>
+      </Container>
     </footer>
   </main>
 );

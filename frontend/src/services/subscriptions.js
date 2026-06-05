@@ -63,7 +63,7 @@ export const checkoutAndVerify = async (planCode, { prefill } = {}) => {
       description: plan?.name || "Subscription",
       prefill: prefill || {},
       notes: { planCode },
-      theme: { color: "#2563EB" },
+      theme: { color: "#D62D14" },
       handler: (resp) =>
         verifyPayment({
           orderId: resp.razorpay_order_id,

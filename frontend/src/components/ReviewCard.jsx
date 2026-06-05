@@ -55,7 +55,7 @@ export const ReviewCard = ({ review, currentUser, onUpdated }) => {
           </div>
         </div>
         {review.isVerifiedProject && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-success">
+          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2.5 py-1 text-xs font-bold text-success">
             <BadgeCheck className="h-3.5 w-3.5" />
             Verified Project
           </span>
@@ -105,7 +105,7 @@ export const ReviewCard = ({ review, currentUser, onUpdated }) => {
           onClick={toggleHelpful}
           className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
             helpful.voted
-              ? "border-blue-400 bg-primary/15 text-accent"
+              ? "border-brand/40 bg-brand/10 text-brand"
               : "border-line-strong text-muted hover:border-line-strong"
           }`}
         >
@@ -148,7 +148,7 @@ export const ReviewCard = ({ review, currentUser, onUpdated }) => {
           <div className="mt-1 flex items-center justify-between">
             <span className="text-xs text-subtle">{replyText.length}/{REPLY_MAX}</span>
           </div>
-          {error && <p className="mt-2 text-sm font-semibold text-red-300">{error}</p>}
+          {error && <p className="mt-2 text-sm font-semibold text-brand">{error}</p>}
           <div className="mt-2 flex gap-2">
             <Button type="submit" className="px-4 py-2 text-xs" disabled={!replyText.trim()}>Post reply</Button>
             <Button type="button" variant="ghost" className="px-4 py-2 text-xs" onClick={() => setReplyOpen(false)}>Cancel</Button>

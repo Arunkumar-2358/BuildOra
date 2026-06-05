@@ -14,7 +14,7 @@ export const PaymentFailed = () => {
 
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-xl flex-col items-center justify-center px-4 py-10 text-center">
-      <span className="grid h-20 w-20 place-items-center rounded-full bg-red-500/10 text-red-400">
+      <span className="grid h-20 w-20 place-items-center rounded-full bg-brand/10 text-brand">
         <XCircle className="h-12 w-12" />
       </span>
       <h1 className="mt-6 text-3xl font-extrabold text-content">
@@ -26,7 +26,7 @@ export const PaymentFailed = () => {
 
       {verification ? (
         <div className="premium-card mt-8 flex w-full items-start gap-3 rounded-2xl p-5 text-left">
-          <ShieldAlert className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-400" />
+          <ShieldAlert className="mt-0.5 h-5 w-5 flex-shrink-0 text-spark" />
           <p className="text-sm text-muted">
             If money was deducted, don't worry — our payment webhook reconciles confirmed payments automatically, so
             your plan may activate shortly. Otherwise the amount is auto-refunded by the bank. Check your{" "}

@@ -1,45 +1,57 @@
-import { Crown, MessageCircle, Star } from "lucide-react";
+import { BadgeCheck, Crown, MapPin, MessageCircle, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "./Button";
+import { Avatar } from "./ui/Avatar";
+import { Badge } from "./ui/Badge";
 
-export const ContractorCard = ({ contractor, onChat }) => (
-  <div className="group premium-card rounded-2xl p-5 transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow">
-    <div className="flex items-start gap-4">
-      <img
-        src={contractor.profileImage?.url || `https://ui-avatars.com/api/?name=${contractor.name}&background=3f6f5a&color=fff`}
-        alt={contractor.name}
-        className="h-14 w-14 rounded-xl object-cover shadow-md"
-      />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1.5">
-          <h3 className="truncate text-base font-bold text-content">{contractor.contractorProfile?.businessName || contractor.name}</h3>
-          {contractor.contractorProfile?.isPremium && <Crown className="h-4 w-4 flex-shrink-0 text-gold" />}
-        </div>
-        <p className="text-sm text-muted">{contractor.city || "Service area not added"}</p>
-        <div className="mt-2 flex items-center gap-1 text-sm font-semibold text-success">
-          <Star className="h-4 w-4 fill-current" />
-          {contractor.contractorProfile?.rating || "New"}
+export const ContractorCard = ({ contractor, onChat }) => {
+  const profile = contractor.contractorProfile || {};
+  const name = profile.businessName || contractor.name;
+  const services = profile.services?.length ? profile.services : ["construction", "interior"];
+
+  return (
+    <div className="group premium-card card-hover flex flex-col rounded-2xl p-5">
+      <div className="flex items-start gap-4">
+        <Avatar src={contractor.profileImage?.url} name={name} size="lg" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <Link to={`/contractors/${contractor._id}`} className="truncate font-bold text-content transition group-hover:text-brand">
+              {name}
+            </Link>
+            {profile.isPremium && <Crown className="h-4 w-4 shrink-0 text-spark" />}
+            {profile.isVerified && <BadgeCheck className="h-4 w-4 shrink-0 text-success" />}
+          </div>
+          <p className="inline-flex items-center gap-1 text-sm text-muted">
+            <MapPin className="h-3.5 w-3.5" /> {contractor.city || "Service area not added"}
+          </p>
+          <div className="mt-1.5 flex items-center gap-1 text-sm font-bold text-content">
+            <Star className="h-4 w-4 fill-spark text-spark" />
+            {profile.rating || "New"}
+            {profile.totalReviews ? <span className="font-normal text-subtle">({profile.totalReviews})</span> : null}
+          </div>
         </div>
       </div>
+
+      <p className="mt-4 line-clamp-2 text-sm leading-6 text-muted">
+        {profile.bio || "Construction and interior specialist ready for BuildOra projects."}
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {services.slice(0, 3).map((service) => (
+          <Badge key={service} tone="neutral" size="sm">{service}</Badge>
+        ))}
+      </div>
+
+      <div className="mt-auto flex gap-2 pt-5">
+        <Button as={Link} to={`/contractors/${contractor._id}`} variant="secondary" size="sm" className="flex-1">
+          View profile
+        </Button>
+        {onChat && (
+          <Button onClick={() => onChat(contractor)} size="sm" className="flex-1">
+            <MessageCircle className="h-4 w-4" /> Chat
+          </Button>
+        )}
+      </div>
     </div>
-    <p className="mt-4 line-clamp-2 text-sm leading-6 text-muted">
-      {contractor.contractorProfile?.bio || "Construction and interior specialist ready for Buildora projects."}
-    </p>
-    <div className="mt-4 flex flex-wrap gap-2">
-      {(contractor.contractorProfile?.services || ["construction", "interior"]).slice(0, 3).map((service) => (
-        <span key={service} className="rounded-full border border-line-strong bg-surface-2 px-3 py-1 text-xs font-bold capitalize text-muted">
-          {service}
-        </span>
-      ))}
-    </div>
-    <div className="mt-5 grid grid-cols-2 gap-2 border-t border-line/40 pt-4 text-xs font-bold text-muted">
-      <span>12 active leads</span>
-      <span className="text-right text-success">Verified profile</span>
-    </div>
-    {onChat && (
-      <Button onClick={() => onChat(contractor)} className="mt-5 w-full" variant="secondary">
-        <MessageCircle className="h-4 w-4" />
-        Chat
-      </Button>
-    )}
-  </div>
-);
+  );
+};

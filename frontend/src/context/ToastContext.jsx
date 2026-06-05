@@ -5,9 +5,9 @@ import { createContext, useCallback, useContext, useState } from "react";
 const ToastContext = createContext(null);
 
 const variants = {
-  success: { Icon: CheckCircle2, className: "border-emerald-500/40 bg-emerald-500/10 text-success" },
-  error: { Icon: XCircle, className: "border-red-500/40 bg-red-500/10 text-red-400" },
-  info: { Icon: Info, className: "border-primary/40 bg-primary/10 text-accent" }
+  success: { Icon: CheckCircle2, className: "border-success/40 bg-success/10 text-success" },
+  error: { Icon: XCircle, className: "border-brand/40 bg-brand/10 text-brand" },
+  info: { Icon: Info, className: "border-brand/40 bg-brand/10 text-brand" }
 };
 
 export const ToastProvider = ({ children }) => {

@@ -77,15 +77,15 @@ export const ContractorRevenue = () => {
           <AreaChart data={monthly}>
             <defs>
               <linearGradient id="earn" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10B981" stopOpacity={0.7} />
-                <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                <stop offset="5%" stopColor="#0F9D6B" stopOpacity={0.7} />
+                <stop offset="95%" stopColor="#0F9D6B" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
             <XAxis dataKey="label" tick={axisTick} axisLine={false} tickLine={false} />
             <YAxis tick={axisTick} axisLine={false} tickLine={false} width={70} tickFormatter={inr} />
             <Tooltip formatter={(v) => currency(v)} contentStyle={tooltipStyle} />
-            <Area type="monotone" dataKey="earning" stroke="#10B981" strokeWidth={2} fill="url(#earn)" />
+            <Area type="monotone" dataKey="earning" stroke="#0F9D6B" strokeWidth={2} fill="url(#earn)" />
           </AreaChart>
         </ChartCard>
         <ChartCard title="Earnings by category" empty={!data.byCategory.length}>
@@ -94,7 +94,7 @@ export const ContractorRevenue = () => {
             <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} tickFormatter={inr} />
             <YAxis type="category" dataKey="category" tick={axisTick} axisLine={false} tickLine={false} width={90} className="capitalize" />
             <Tooltip formatter={(v) => currency(v)} contentStyle={tooltipStyle} />
-            <Bar dataKey="earning" fill="#2563EB" radius={[0, 6, 6, 0]} />
+            <Bar dataKey="earning" fill="#D62D14" radius={[0, 6, 6, 0]} />
           </BarChart>
         </ChartCard>
       </div>
