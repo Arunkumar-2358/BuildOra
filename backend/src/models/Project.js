@@ -39,6 +39,13 @@ const projectSchema = new mongoose.Schema(
       type: String,
       enum: ["open", "in-review", "awarded", "completed", "cancelled"],
       default: "open"
+    },
+    // Premium-only projects (high budget or premium category) are exclusive to
+    // premium contractors. Set automatically at creation from PlatformSettings.
+    visibility: {
+      type: String,
+      enum: ["public", "premium"],
+      default: "public"
     }
   },
   { timestamps: true }
@@ -46,6 +53,8 @@ const projectSchema = new mongoose.Schema(
 
 projectSchema.index({ title: "text", description: "text", location: "text", category: "text" });
 projectSchema.index({ geo: "2dsphere" });
+// Premium-aware browse filtering (hide premium projects from non-premium contractors).
+projectSchema.index({ visibility: 1, status: 1, createdAt: -1 });
 
 const Project = mongoose.model("Project", projectSchema);
 

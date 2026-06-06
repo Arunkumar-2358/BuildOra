@@ -75,7 +75,7 @@ export const AdminApprovals = () => {
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div className="flex items-start gap-4">
                     <img
-                      src={c.profileImage?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=2563EB&color=fff`}
+                      src={c.profileImage?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=D62D14&color=fff`}
                       alt={c.name}
                       className="h-14 w-14 rounded-xl object-cover"
                     />
@@ -103,7 +103,7 @@ export const AdminApprovals = () => {
                   <Detail label="Certifications" value={p.certifications?.join(", ")} />
                 </div>
                 {p.bio && <p className="mt-3 rounded-xl bg-surface-2/60 p-3 text-sm text-muted">{p.bio}</p>}
-                {p.adminNote && <p className="mt-2 text-xs text-amber-400">Admin note: {p.adminNote}</p>}
+                {p.adminNote && <p className="mt-2 text-xs text-spark">Admin note: {p.adminNote}</p>}
 
                 {/* Actions */}
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -133,8 +133,8 @@ const Detail = ({ label, value, icon: Icon }) => (
 
 const toneClasses = {
   default: "border-line-strong text-content hover:bg-surface-2",
-  success: "bg-emerald-500 text-slate-950 hover:bg-emerald-400",
-  danger: "border-red-500/40 text-red-400 hover:bg-red-500/10"
+  success: "bg-success text-white hover:opacity-90",
+  danger: "border-brand/40 text-brand hover:bg-brand/10"
 };
 
 const ActionBtn = ({ children, onClick, disabled, tone = "default", icon: Icon }) => (

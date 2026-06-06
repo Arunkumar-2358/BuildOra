@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { getChats, getMessages, startChat, uploadAttachment, uploadVoice } from "../controllers/chatController.js";
+import { getChats, getMessages, sendMessage, startChat, uploadAttachment, uploadVoice } from "../controllers/chatController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { audioUpload, fileUpload } from "../middleware/uploadMiddleware.js";
 import { validate } from "../middleware/validate.js";
@@ -21,5 +21,6 @@ router.post(
   startChat
 );
 router.get("/:chatId/messages", protect, getMessages);
+router.post("/:chatId/messages", protect, sendMessage);
 
 export default router;

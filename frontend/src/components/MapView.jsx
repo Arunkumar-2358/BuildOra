@@ -2,7 +2,7 @@ import { MapPin } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useGoogleMaps } from "../hooks/useGoogleMaps";
 
-const PIN_COLORS = { project: "#EF4444", customer: "#2563EB", contractor: "#10B981" };
+const PIN_COLORS = { project: "#D62D14", customer: "#FB7A1E", contractor: "#0F9D6B" };
 
 /**
  * Google Maps view with markers. Degrades to a clean list when no API key is

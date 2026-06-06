@@ -104,7 +104,7 @@ export const AdminUsers = () => {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={u.profileImage?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=2563EB&color=fff`}
+                          src={u.profileImage?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=D62D14&color=fff`}
                           alt={u.name}
                           className="h-9 w-9 rounded-lg object-cover"
                         />
@@ -123,8 +123,8 @@ export const AdminUsers = () => {
                         disabled={busyId === u._id}
                         className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition disabled:opacity-50 ${
                           u.status === "suspended"
-                            ? "border-emerald-500/40 text-success hover:bg-emerald-500/10"
-                            : "border-red-500/40 text-red-400 hover:bg-red-500/10"
+                            ? "border-success/40 text-success hover:bg-success/10"
+                            : "border-brand/40 text-brand hover:bg-brand/10"
                         }`}
                       >
                         {u.status === "suspended" ? <><Play className="h-3.5 w-3.5" /> Reactivate</> : <><Pause className="h-3.5 w-3.5" /> Suspend</>}

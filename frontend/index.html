@@ -2,8 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Buildora</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="BuildOra — the modern marketplace where homeowners post construction & interior projects and trusted contractors bid, chat, and build. Compare verified quotes in minutes." />
+    <meta name="theme-color" content="#D62D14" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>BuildOra — Build Better, Together</title>
+    <script>
+      // Apply persisted theme before paint to avoid a flash of the wrong mode.
+      try {
+        if (localStorage.getItem("buildora_theme") === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

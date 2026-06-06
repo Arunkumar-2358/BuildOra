@@ -1,12 +1,49 @@
-import { AlertCircle, FileText, ImagePlus, Send, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight, Check, FileText, ImagePlus, Send, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { Input, Select, Textarea } from "../components/Input";
 import { LocationPicker } from "../components/LocationPicker";
+import { Container } from "../components/ui/Container";
+import { cn } from "../lib/cn";
 import { api } from "../services/api";
 import { formatBytes } from "../utils/format";
 import { MAX_FILE_BYTES, MAX_PROJECT_FILES, isPdf, validateFiles } from "../utils/upload";
+
+const STEPS = ["Basics", "Budget & location", "Floor plans"];
+const CATEGORIES = ["construction", "interior", "renovation", "architecture", "landscaping", "other"];
+
+const Stepper = ({ step }) => (
+  <ol className="mt-8 flex items-center">
+    {STEPS.map((label, i) => {
+      const n = i + 1;
+      const active = step === n;
+      const done = step > n;
+      return (
+        <li key={label} className={cn("flex items-center", i < STEPS.length - 1 && "flex-1")}>
+          <div className="flex items-center gap-2.5">
+            <span
+              className={cn(
+                "grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-bold transition-colors",
+                done && "bg-brand text-white",
+                active && "bg-brand text-white shadow-glow",
+                !done && !active && "border border-line-strong bg-surface text-subtle"
+              )}
+            >
+              {done ? <Check className="h-4 w-4" /> : n}
+            </span>
+            <span className={cn("hidden text-sm font-semibold sm:block", active || done ? "text-content" : "text-subtle")}>
+              {label}
+            </span>
+          </div>
+          {i < STEPS.length - 1 && (
+            <span className={cn("mx-3 h-0.5 flex-1 rounded-full transition-colors", done ? "bg-brand" : "bg-line")} />
+          )}
+        </li>
+      );
+    })}
+  </ol>
+);
 
 export const PostProject = () => {
   const navigate = useNavigate();
@@ -29,11 +66,9 @@ export const PostProject = () => {
     images: []
   });
 
-  // LocationPicker uses `city`; map it onto the project's `location` field.
   const onLocation = ({ city, ...rest }) =>
     setForm((current) => ({ ...current, ...rest, ...(city !== undefined ? { location: city } : {}) }));
 
-  // Object URLs for image previews — memoized so they're stable per file.
   const previews = useMemo(
     () => form.images.map((file) => ({ file, url: isPdf(file.type) ? null : URL.createObjectURL(file) })),
     [form.images]
@@ -49,13 +84,12 @@ export const PostProject = () => {
     setFileErrors(errors);
     if (valid.length) {
       setForm((current) => {
-        // De-duplicate by name+size so re-selecting the same file is a no-op.
         const seen = new Set(current.images.map((f) => `${f.name}:${f.size}`));
         const merged = [...current.images, ...valid.filter((f) => !seen.has(`${f.name}:${f.size}`))];
         return { ...current, images: merged.slice(0, MAX_PROJECT_FILES) };
       });
     }
-    event.target.value = ""; // allow re-selecting the same file after removal
+    event.target.value = "";
   };
 
   const removeFile = (index) =>
@@ -79,7 +113,6 @@ export const PostProject = () => {
       });
       navigate(`/projects/${data._id}`);
     } catch (err) {
-      // Stay on the page so the user can retry; surface a clear reason.
       setError(err.response?.data?.message || "Unable to create project. Please try again.");
       setProgress(0);
     } finally {
@@ -87,45 +120,71 @@ export const PostProject = () => {
     }
   };
 
+  const canContinue = step === 1 ? form.title && form.description : step === 2 ? form.timeline : true;
+
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-3xl font-extrabold text-content">Post a project requirement</h1>
-      <p className="mt-2 text-muted">Step {step} of 3 - crafted to help contractors respond with high-quality bids.</p>
-      <form onSubmit={submit} className="premium-card mt-6 grid gap-5 rounded-2xl p-6 shadow-sm">
+    <Container className="max-w-3xl py-8">
+      <h1 className="font-display text-3xl font-bold tracking-tight text-content md:text-4xl">Post a project</h1>
+      <p className="mt-2 text-muted">Tell us what you need — it takes about two minutes and helps pros bid accurately.</p>
+
+      <Stepper step={step} />
+
+      <form onSubmit={submit} className="premium-card mt-8 grid gap-5 rounded-2xl p-6 md:p-7">
         {step === 1 && (
           <>
-            <Input label="Project title" name="title" value={form.title} onChange={update} required />
-            <Textarea label="Description" name="description" value={form.description} onChange={update} required />
+            <Input label="Project title" name="title" value={form.title} onChange={update} placeholder="e.g. 3BHK premium interiors" required />
+            <Textarea label="Description" name="description" value={form.description} onChange={update} placeholder="Describe the scope, style, materials and any must-haves…" required />
             <Select label="Category" name="category" value={form.category} onChange={update}>
-              {["construction", "interior", "renovation", "architecture", "landscaping", "other"].map((category) => (
-                <option key={category} value={category}>{category}</option>
+              {CATEGORIES.map((category) => (
+                <option key={category} value={category} className="capitalize">{category}</option>
               ))}
             </Select>
           </>
         )}
+
         {step === 2 && (
           <>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-muted">Budget (INR)</label>
-              <input className="w-full accent-blue-500" name="budget" type="range" min="100000" max="20000000" step="50000" value={form.budget || 100000} onChange={update} />
-              <p className="mt-2 text-sm font-bold text-accent">₹{Number(form.budget || 100000).toLocaleString("en-IN")}</p>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className="text-sm font-semibold text-content">Budget</label>
+                <span className="font-display text-lg font-bold text-brand tabular">
+                  ₹{Number(form.budget || 100000).toLocaleString("en-IN")}
+                </span>
+              </div>
+              <input
+                className="w-full accent-brand"
+                name="budget"
+                type="range"
+                min="100000"
+                max="20000000"
+                step="50000"
+                value={form.budget || 100000}
+                onChange={update}
+              />
+              <div className="mt-1 flex justify-between text-xs text-subtle">
+                <span>₹1L</span>
+                <span>₹2Cr</span>
+              </div>
             </div>
             <LocationPicker
               label="Project location"
               value={{ city: form.location, state: form.state, pincode: form.pincode, lat: form.lat, lng: form.lng }}
               onChange={onLocation}
             />
-            <p className="-mt-1 text-xs text-muted">Adding a precise location helps us match you with the best nearby contractors.</p>
+            <p className="-mt-1 text-xs text-muted">A precise location helps us match you with the best nearby contractors.</p>
             <Input label="Timeline" name="timeline" value={form.timeline} onChange={update} placeholder="e.g. 3 months" required />
           </>
         )}
+
         {step === 3 && (
           <div className="space-y-4">
-            <label className="block cursor-pointer rounded-xl border border-dashed border-line-strong bg-surface/60 p-6 text-center transition hover:border-primary hover:bg-surface-2/40">
-              <ImagePlus className="mx-auto h-8 w-8 text-accent" />
-              <span className="mt-2 block text-sm font-bold text-content">Upload images or floor plans</span>
+            <label className="block cursor-pointer rounded-2xl border border-dashed border-line-strong bg-surface-2/40 p-8 text-center transition hover:border-brand/50 hover:bg-brand/5">
+              <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-brand/10 text-brand">
+                <ImagePlus className="h-6 w-6" />
+              </span>
+              <span className="mt-3 block text-sm font-bold text-content">Upload images or floor plans</span>
               <span className="mt-1 block text-xs text-muted">
-                PDF, JPG, JPEG, PNG · up to {formatBytes(MAX_FILE_BYTES)} each · max {MAX_PROJECT_FILES} files
+                PDF, JPG, PNG · up to {formatBytes(MAX_FILE_BYTES)} each · max {MAX_PROJECT_FILES} files
               </span>
               <input
                 className="sr-only"
@@ -141,24 +200,23 @@ export const PostProject = () => {
             </label>
 
             {fileErrors.length > 0 && (
-              <div className="rounded-xl bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">
+              <div className="rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-semibold text-brand">
                 {fileErrors.map((msg) => (
                   <p key={msg} className="flex items-start gap-2">
-                    <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" /> {msg}
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" /> {msg}
                   </p>
                 ))}
               </div>
             )}
 
-            {/* Selected file previews */}
             {previews.length > 0 && (
               <div className="grid gap-3 sm:grid-cols-2">
                 {previews.map(({ file, url }, index) => (
                   <div key={`${file.name}:${file.size}`} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3">
                     {url ? (
-                      <img src={url} alt={file.name} className="h-12 w-12 flex-shrink-0 rounded-lg object-cover" />
+                      <img src={url} alt={file.name} className="h-12 w-12 shrink-0 rounded-lg object-cover" />
                     ) : (
-                      <span className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-lg bg-red-500/10 text-red-400">
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
                         <FileText className="h-6 w-6" />
                       </span>
                     )}
@@ -171,7 +229,7 @@ export const PostProject = () => {
                       onClick={() => removeFile(index)}
                       disabled={loading}
                       aria-label={`Remove ${file.name}`}
-                      className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-lg text-muted hover:text-red-400 disabled:opacity-50"
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted transition hover:bg-surface-2 hover:text-brand disabled:opacity-50"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -180,11 +238,10 @@ export const PostProject = () => {
               </div>
             )}
 
-            {/* Upload progress */}
             {loading && (
               <div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-brand-gradient transition-all" style={{ width: `${progress}%` }} />
+                  <div className="h-full rounded-full bg-brand transition-all" style={{ width: `${progress}%` }} />
                 </div>
                 <p className="mt-1.5 text-xs font-semibold text-muted">
                   {progress < 100 ? `Uploading… ${progress}%` : "Finalizing project…"}
@@ -194,20 +251,27 @@ export const PostProject = () => {
           </div>
         )}
 
-        {error && <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-300">{error}</p>}
+        {error && <p className="rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-semibold text-brand">{error}</p>}
 
-        <div className="flex flex-wrap gap-3">
-          {step > 1 && <Button type="button" variant="secondary" disabled={loading} onClick={() => setStep((v) => v - 1)}>Back</Button>}
-          {step < 3 ? (
-            <Button type="button" onClick={() => setStep((v) => v + 1)}>Continue</Button>
+        <div className="flex items-center justify-between gap-3 border-t border-line pt-5">
+          {step > 1 ? (
+            <Button type="button" variant="secondary" disabled={loading} onClick={() => setStep((v) => v - 1)}>
+              <ArrowLeft className="h-4 w-4" /> Back
+            </Button>
           ) : (
-            <Button disabled={loading} className="justify-self-start">
-              <Send className="h-4 w-4" />
-              {loading ? "Posting..." : "Post project"}
+            <span />
+          )}
+          {step < 3 ? (
+            <Button type="button" disabled={!canContinue} onClick={() => setStep((v) => v + 1)}>
+              Continue <ArrowRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button type="submit" loading={loading}>
+              <Send className="h-4 w-4" /> {loading ? "Posting…" : "Post project"}
             </Button>
           )}
         </div>
       </form>
-    </main>
+    </Container>
   );
 };

@@ -151,18 +151,18 @@ export const VoiceRecorder = ({ chatId, onSend, disabled }) => {
         >
           <Mic className="h-5 w-5" />
         </button>
-        {error && <p className="mt-1 max-w-[12rem] text-right text-xs text-red-400">{error}</p>}
+        {error && <p className="mt-1 max-w-[12rem] text-right text-xs text-brand">{error}</p>}
       </div>
     );
   }
 
   if (status === "recording") {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2.5">
-        <span className="h-3 w-3 animate-pulse rounded-full bg-red-500" />
+      <div className="flex items-center gap-3 rounded-xl border border-brand/40 bg-brand/10 px-4 py-2.5">
+        <span className="h-3 w-3 animate-pulse rounded-full bg-brand" />
         <span className="font-mono text-sm font-bold text-content">{fmt(elapsed)}</span>
         <span className="text-xs text-muted">Recording…</span>
-        <button type="button" onClick={cancelRecording} aria-label="Cancel" className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:text-red-400">
+        <button type="button" onClick={cancelRecording} aria-label="Cancel" className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:text-brand">
           <Trash2 className="h-4 w-4" />
         </button>
         <button type="button" onClick={stopRecording} aria-label="Stop recording" className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-white hover:brightness-110">
@@ -181,7 +181,7 @@ export const VoiceRecorder = ({ chatId, onSend, disabled }) => {
           onClick={discard}
           disabled={status === "uploading"}
           aria-label="Delete recording"
-          className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-lg text-muted hover:text-red-400 disabled:opacity-50"
+          className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-lg text-muted hover:text-brand disabled:opacity-50"
         >
           <Trash2 className="h-4 w-4" />
         </button>
@@ -196,7 +196,7 @@ export const VoiceRecorder = ({ chatId, onSend, disabled }) => {
           {status === "uploading" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </button>
       </div>
-      {error && <p className="max-w-[16rem] text-right text-xs text-red-400">{error}</p>}
+      {error && <p className="max-w-[16rem] text-right text-xs text-brand">{error}</p>}
     </div>
   );
 };

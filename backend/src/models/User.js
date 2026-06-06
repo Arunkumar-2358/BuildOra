@@ -35,7 +35,23 @@ const contractorProfileSchema = new mongoose.Schema(
       type: String,
       enum: ["available", "busy", "unavailable"],
       default: "available"
-    }
+    },
+
+    // --- Revenue: denormalized subscription/premium cache ---
+    // Source of truth is ContractorSubscription; mirrored here so bid-gating and
+    // premium discovery stay a single indexed User read at scale. Refreshed on
+    // purchase, renewal, and expiry by subscriptionService.
+    subscriptionTier: { type: String, enum: ["free", "pro", "premium"], default: "free" },
+    subscriptionStatus: {
+      type: String,
+      enum: ["none", "active", "expired", "cancelled"],
+      default: "none"
+    },
+    subscriptionExpiresAt: Date,
+    isPremium: { type: Boolean, default: false },
+    premiumExpiresAt: Date,
+    // Hybrid free-trial counter (distinct projects bid on while on the free tier).
+    freeBidsUsed: { type: Number, default: 0 }
   },
   { _id: false }
 );
@@ -65,6 +81,8 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.index({ geo: "2dsphere" });
+// Premium-first contractor discovery & ranking (Phase 3).
+userSchema.index({ "contractorProfile.isPremium": -1, "contractorProfile.rating": -1 });
 
 userSchema.pre("save", async function hashPassword(next) {
   if (!this.isModified("password")) return next();

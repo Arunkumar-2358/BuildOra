@@ -3,9 +3,9 @@ import { formatBytes } from "../utils/format";
 import { fileKind } from "../utils/upload";
 
 const iconFor = {
-  pdf: { Icon: FileText, className: "bg-red-500/15 text-red-400" },
-  doc: { Icon: FileText, className: "bg-blue-500/15 text-blue-400" },
-  sheet: { Icon: FileSpreadsheet, className: "bg-emerald-500/15 text-emerald-400" },
+  pdf: { Icon: FileText, className: "bg-brand/15 text-brand" },
+  doc: { Icon: FileText, className: "bg-spark/15 text-spark" },
+  sheet: { Icon: FileSpreadsheet, className: "bg-success/15 text-success" },
   file: { Icon: FileIcon, className: "bg-surface-2 text-muted" }
 };
 

@@ -57,7 +57,7 @@ export const LocationPicker = ({ value = {}, onChange, label = "Location" }) => 
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Crosshair className="h-4 w-4 text-accent" />}
         Use my current location
       </button>
-      {error && <p className="text-xs font-semibold text-red-400">{error}</p>}
+      {error && <p className="text-xs font-semibold text-brand">{error}</p>}
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Input label="City" value={value.city || ""} onChange={(e) => onChange({ city: e.target.value })} placeholder="City" />

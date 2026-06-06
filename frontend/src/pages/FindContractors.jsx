@@ -7,6 +7,9 @@ import { LocationPicker } from "../components/LocationPicker";
 import { MapView } from "../components/MapView";
 import { MatchScore } from "../components/MatchScore";
 import { StarDisplay } from "../components/StarRating";
+import { Avatar } from "../components/ui/Avatar";
+import { Container } from "../components/ui/Container";
+import { EmptyState } from "../components/ui/EmptyState";
 import { api } from "../services/api";
 
 const SORTS = [
@@ -19,16 +22,13 @@ const SORTS = [
 
 const ContractorRow = ({ c, onChat }) => {
   const profile = c.contractorProfile || {};
+  const name = profile.businessName || c.name;
   return (
-    <div className="premium-card flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center">
-      <img
-        src={c.profileImage?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.businessName || c.name)}&background=2563EB&color=fff`}
-        alt={c.name}
-        className="h-16 w-16 flex-shrink-0 rounded-2xl object-cover"
-      />
+    <div className="premium-card flex flex-col gap-4 rounded-2xl p-5 transition hover:border-brand/30 sm:flex-row sm:items-center">
+      <Avatar src={c.profileImage?.url} name={name} size="lg" className="shrink-0" />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-bold text-content">{profile.businessName || c.name}</h3>
+          <Link to={`/contractors/${c._id}`} className="font-bold text-content hover:text-brand">{name}</Link>
           {profile.isVerified && <ShieldCheck className="h-4 w-4 text-success" />}
           {typeof c.matchScore === "number" && <MatchScore score={c.matchScore} label={c.matchLabel} />}
         </div>
@@ -39,15 +39,15 @@ const ContractorRow = ({ c, onChat }) => {
         </div>
         {profile.specialization && <p className="mt-1 text-sm text-muted">{profile.specialization}</p>}
       </div>
-      <div className="flex flex-shrink-0 gap-2">
-        <Button as={Link} to={`/contractors/${c._id}`} variant="secondary"><Briefcase className="h-4 w-4" /> Profile</Button>
-        <Button variant="ghost" onClick={() => onChat(c._id)}><MessageCircle className="h-4 w-4" /> Chat</Button>
+      <div className="flex shrink-0 gap-2">
+        <Button as={Link} to={`/contractors/${c._id}`} variant="secondary" size="sm"><Briefcase className="h-4 w-4" /> Profile</Button>
+        <Button variant="ghost" size="sm" onClick={() => onChat(c._id)}><MessageCircle className="h-4 w-4" /> Chat</Button>
       </div>
     </div>
   );
 };
 
-const SkeletonRow = () => <div className="premium-card h-28 animate-pulse rounded-2xl" />;
+const SkeletonRow = () => <div className="skeleton h-28 rounded-2xl" />;
 
 export const FindContractors = () => {
   const navigate = useNavigate();
@@ -103,19 +103,19 @@ export const FindContractors = () => {
   ].filter(Boolean);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-3xl font-extrabold text-content">Find contractors near you</h1>
+    <Container className="py-8">
+      <h1 className="font-display text-3xl font-bold tracking-tight text-content md:text-4xl">Find contractors near you</h1>
       <p className="mt-2 text-muted">Discover and compare verified professionals by distance, rating, and specialization.</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[20rem_1fr]">
         {/* Filters */}
-        <aside className="premium-card h-fit rounded-2xl p-5">
-          <h2 className="flex items-center gap-2 text-lg font-extrabold text-content"><SlidersHorizontal className="h-5 w-5 text-accent" /> Filters</h2>
+        <aside className="premium-card h-fit rounded-2xl p-5 lg:sticky lg:top-6">
+          <h2 className="flex items-center gap-2 text-lg font-bold text-content"><SlidersHorizontal className="h-5 w-5 text-brand" /> Filters</h2>
           <div className="mt-4 space-y-4">
             <LocationPicker value={loc} onChange={(patch) => setLoc((l) => ({ ...l, ...patch }))} />
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-muted">Distance: {filters.radius} km</label>
-              <input type="range" min="5" max="200" step="5" value={filters.radius} onChange={(e) => setFilter("radius", Number(e.target.value))} className="w-full accent-blue-500" disabled={!hasCoords} />
+              <label className="mb-1.5 block text-sm font-semibold text-content">Distance: {filters.radius} km</label>
+              <input type="range" min="5" max="200" step="5" value={filters.radius} onChange={(e) => setFilter("radius", Number(e.target.value))} className="w-full accent-brand" disabled={!hasCoords} />
             </div>
             <Input label="Specialization" value={filters.specialization} onChange={(e) => setFilter("specialization", e.target.value)} placeholder="e.g. interior" />
             <div className="grid grid-cols-2 gap-3">
@@ -128,23 +128,25 @@ export const FindContractors = () => {
               <option value="busy">Busy</option>
             </Select>
             <label className="flex items-center gap-2 text-sm font-semibold text-muted">
-              <input type="checkbox" checked={filters.verified} onChange={(e) => setFilter("verified", e.target.checked)} className="h-4 w-4 accent-blue-500" />
+              <input type="checkbox" checked={filters.verified} onChange={(e) => setFilter("verified", e.target.checked)} className="h-4 w-4 accent-brand" />
               Verified only
             </label>
             <Select label="Sort by" value={filters.sort} onChange={(e) => setFilter("sort", e.target.value)}>
               {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </Select>
-            <Button className="w-full" onClick={search} disabled={loading}>
+            <Button className="w-full" onClick={search} loading={loading}>
               <Search className="h-4 w-4" /> {loading ? "Searching…" : "Search"}
             </Button>
-            {error && <p className="text-sm font-semibold text-red-400">{error}</p>}
+            {error && <p className="text-sm font-semibold text-brand">{error}</p>}
           </div>
         </aside>
 
         {/* Results + map */}
         <section className="space-y-5">
           {(hasCoords || results.length > 0) && (
-            <MapView center={hasCoords ? { lat: Number(loc.lat), lng: Number(loc.lng) } : { lat: markers[0]?.lat, lng: markers[0]?.lng }} markers={markers} />
+            <div className="overflow-hidden rounded-2xl border border-line">
+              <MapView center={hasCoords ? { lat: Number(loc.lat), lng: Number(loc.lng) } : { lat: markers[0]?.lat, lng: markers[0]?.lng }} markers={markers} />
+            </div>
           )}
 
           {loading ? (
@@ -153,20 +155,15 @@ export const FindContractors = () => {
             <div className="space-y-4">
               {results.map((c) => <ContractorRow key={c._id} c={c} onChat={startChat} />)}
             </div>
-          ) : searched ? (
-            <div className="premium-card rounded-2xl p-10 text-center">
-              <p className="text-lg font-extrabold text-content">No contractors found</p>
-              <p className="mt-2 text-sm text-muted">Try widening the distance or relaxing your filters.</p>
-            </div>
           ) : (
-            <div className="premium-card rounded-2xl p-10 text-center">
-              <MapPin className="mx-auto h-8 w-8 text-muted" />
-              <p className="mt-2 text-lg font-extrabold text-content">Set your location to start</p>
-              <p className="mt-1 text-sm text-muted">Use "Use my current location" or enter a city, then hit Search.</p>
-            </div>
+            <EmptyState
+              icon={MapPin}
+              title={searched ? "No contractors found" : "Set your location to start"}
+              description={searched ? "Try widening the distance or relaxing your filters." : "Use “Use my current location” or enter a city, then hit Search."}
+            />
           )}
         </section>
       </div>
-    </main>
+    </Container>
   );
 };

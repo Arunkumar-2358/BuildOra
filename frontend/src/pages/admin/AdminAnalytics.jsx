@@ -18,7 +18,7 @@ import { ErrorState, Skeleton } from "../../components/admin/AdminPrimitives";
 import { api } from "../../services/api";
 import { currency } from "../../utils/format";
 
-const COLORS = ["#2563EB", "#10B981", "#F59E0B", "#6366F1", "#EF4444", "#14B8A6"];
+const COLORS = ["#D62D14", "#FB7A1E", "#0F9D6B", "#8C1A0B", "#FFA64D", "#B3A69D"];
 const axisTick = { fill: "#94A3B8", fontSize: 12 };
 
 const monthLabel = (ym = "") => {
@@ -77,15 +77,15 @@ export const AdminAnalytics = () => {
         <AreaChart data={revenue}>
           <defs>
             <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10B981" stopOpacity={0.7} />
-              <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+              <stop offset="5%" stopColor="#D62D14" stopOpacity={0.7} />
+              <stop offset="95%" stopColor="#D62D14" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" />
           <XAxis dataKey="label" tick={axisTick} axisLine={false} tickLine={false} />
           <YAxis tick={axisTick} axisLine={false} tickLine={false} width={70} tickFormatter={(v) => `₹${v >= 1000 ? `${Math.round(v / 1000)}k` : v}`} />
           <Tooltip formatter={(v) => currency(v)} contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
-          <Area type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={2} fill="url(#rev)" />
+          <Area type="monotone" dataKey="revenue" stroke="#D62D14" strokeWidth={2} fill="url(#rev)" />
         </AreaChart>
       </ChartCard>
 
@@ -95,7 +95,7 @@ export const AdminAnalytics = () => {
           <XAxis dataKey="label" tick={axisTick} axisLine={false} tickLine={false} />
           <YAxis tick={axisTick} axisLine={false} tickLine={false} allowDecimals={false} width={30} />
           <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
-          <Bar dataKey="transactions" fill="#2563EB" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="transactions" fill="#D62D14" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ChartCard>
 
@@ -106,8 +106,8 @@ export const AdminAnalytics = () => {
           <YAxis tick={axisTick} axisLine={false} tickLine={false} allowDecimals={false} width={30} />
           <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
           <Legend />
-          <Area type="monotone" dataKey="customers" stackId="1" stroke="#2563EB" fill="#2563EB" fillOpacity={0.4} />
-          <Area type="monotone" dataKey="contractors" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.4} />
+          <Area type="monotone" dataKey="customers" stackId="1" stroke="#D62D14" fill="#D62D14" fillOpacity={0.4} />
+          <Area type="monotone" dataKey="contractors" stackId="1" stroke="#FB7A1E" fill="#FB7A1E" fillOpacity={0.4} />
         </AreaChart>
       </ChartCard>
 
@@ -126,7 +126,7 @@ export const AdminAnalytics = () => {
           <XAxis type="number" domain={[0, 5]} tick={axisTick} axisLine={false} tickLine={false} />
           <YAxis type="category" dataKey="name" tick={axisTick} axisLine={false} tickLine={false} width={90} />
           <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
-          <Bar dataKey="rating" fill="#F59E0B" radius={[0, 6, 6, 0]} />
+          <Bar dataKey="rating" fill="#FB7A1E" radius={[0, 6, 6, 0]} />
         </BarChart>
       </ChartCard>
 
@@ -136,7 +136,7 @@ export const AdminAnalytics = () => {
           <XAxis type="number" allowDecimals={false} tick={axisTick} axisLine={false} tickLine={false} />
           <YAxis type="category" dataKey="city" tick={axisTick} axisLine={false} tickLine={false} width={90} />
           <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
-          <Bar dataKey="count" fill="#10B981" radius={[0, 6, 6, 0]} />
+          <Bar dataKey="count" fill="#D62D14" radius={[0, 6, 6, 0]} />
         </BarChart>
       </ChartCard>
 
@@ -146,7 +146,7 @@ export const AdminAnalytics = () => {
           <XAxis type="number" allowDecimals={false} tick={axisTick} axisLine={false} tickLine={false} />
           <YAxis type="category" dataKey="city" tick={axisTick} axisLine={false} tickLine={false} width={90} />
           <Tooltip contentStyle={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--line))", borderRadius: 12, color: "rgb(var(--content))" }} />
-          <Bar dataKey="count" fill="#6366F1" radius={[0, 6, 6, 0]} />
+          <Bar dataKey="count" fill="#0F9D6B" radius={[0, 6, 6, 0]} />
         </BarChart>
       </ChartCard>
     </div>

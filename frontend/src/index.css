@@ -1,94 +1,178 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* BuildOra design system v1 — Construction Red identity */
 
 /*
- * Centralized theme tokens.
- * Values are space-separated RGB channels so Tailwind's `<alpha-value>`
- * modifier works (e.g. `bg-surface/80`). Light theme is the base; the
- * `.dark` class on <html> swaps in the dark palette.
+ * BuildOra theme tokens — "Bold Red on Light".
+ * Channels are space-separated RGB so Tailwind's `<alpha-value>` modifier works
+ * (e.g. `bg-surface/80`, `text-brand/70`). Light is the default; `.dark` on <html>
+ * swaps the warm-black palette. Construction Red is the dominant brand signal.
  */
 :root {
   color-scheme: light;
 
-  --bg: 248 250 252;          /* page background  (slate-50)  */
-  --surface: 255 255 255;     /* cards            (white)     */
-  --surface-2: 241 245 249;   /* insets/chips     (slate-100) */
-  --surface-deep: 226 232 240;/* deepest panels   (slate-200) */
+  --bg: 250 247 245;          /* warm white canvas        */
+  --surface: 255 255 255;     /* cards                     */
+  --surface-2: 244 239 236;   /* insets / chips            */
+  --surface-deep: 232 224 218;/* deepest panels            */
 
-  --content: 15 23 42;        /* primary text     (slate-900) */
-  --muted: 71 85 105;         /* secondary text   (slate-600) */
-  --subtle: 100 116 139;      /* tertiary text    (slate-500) */
+  --content: 26 19 15;        /* primary text (warm ink)   */
+  --muted: 94 83 76;          /* secondary text            */
+  --subtle: 138 124 115;      /* tertiary text             */
 
-  --line: 226 232 240;        /* borders          (slate-200) */
-  --line-strong: 203 213 225; /* emphasized borders(slate-300)*/
+  --line: 232 224 218;        /* borders                   */
+  --line-strong: 215 204 196; /* emphasized borders        */
 
-  --accent: 37 99 235;        /* links/accents    (blue-600)  */
-  --success: 5 150 105;       /* positive accent  (emerald-600)*/
+  --brand: 214 45 20;         /* Construction Red (#D62D14)*/
+  --brand-contrast: 255 255 255;
+  --spark: 251 122 30;        /* warm orange (#FB7A1E)     */
+  --accent: 214 45 20;        /* links/accents = brand     */
+  --success: 15 157 107;      /* sober emerald             */
 
-  --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-card: 0 10px 30px rgba(26, 19, 15, 0.08);
+  --ring: 214 45 20;
 }
 
 .dark {
   color-scheme: dark;
 
-  --bg: 5 10 20;              /* #050a14 */
-  --surface: 15 23 42;        /* slate-900 */
-  --surface-2: 30 41 59;      /* slate-800 */
-  --surface-deep: 2 8 23;     /* slate-950 */
+  --bg: 17 11 8;              /* warm near-black           */
+  --surface: 28 20 16;
+  --surface-2: 40 30 24;
+  --surface-deep: 12 8 6;
 
-  --content: 241 245 249;     /* slate-100 */
-  --muted: 148 163 184;       /* slate-400 */
-  --subtle: 100 116 139;      /* slate-500 */
+  --content: 250 245 242;
+  --muted: 184 168 160;
+  --subtle: 138 124 115;
 
-  --line: 51 65 85;           /* slate-700 */
-  --line-strong: 71 85 105;   /* slate-600 */
+  --line: 56 44 37;
+  --line-strong: 78 62 52;
 
-  --accent: 147 197 253;      /* blue-300 */
-  --success: 110 231 183;     /* emerald-300 */
+  --brand: 255 91 64;        /* brighter red so it glows on black */
+  --brand-contrast: 26 19 15;
+  --spark: 255 166 77;
+  --accent: 255 122 92;
+  --success: 52 211 153;
 
-  --shadow-card: 0 18px 50px rgba(2, 8, 23, 0.45);
+  --shadow-card: 0 18px 50px rgba(0, 0, 0, 0.5);
+  --ring: 255 91 64;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  background: rgb(var(--bg));
-  color: rgb(var(--content));
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  transition: background-color 0.3s ease, color 0.3s ease;
+@layer base {
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    background: rgb(var(--bg));
+    color: rgb(var(--content));
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Display headings carry the architectural Sora face by default. */
+  h1, h2, h3, h4, .font-display {
+    font-family: "Sora", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  button, input, textarea, select {
+    font: inherit;
+  }
+
+  ::selection {
+    background: rgb(var(--brand) / 0.18);
+    color: rgb(var(--content));
+  }
+
+  /* Branded, accessible focus ring across the whole app. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring) / 0.7);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-/* App background — a subtle branded mesh that adapts to the active theme. */
+/* App canvas — subtle blueprint grid + warm red mesh that adapts to theme. */
 .app-shell {
   min-height: 100vh;
   background-color: rgb(var(--bg));
   background-image:
-    radial-gradient(circle at 10% -10%, rgba(37, 99, 235, 0.12), transparent 45%),
-    radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.1), transparent 40%);
+    radial-gradient(circle at 8% -8%, rgba(214, 45, 20, 0.07), transparent 42%),
+    radial-gradient(circle at 100% 0%, rgba(251, 122, 30, 0.06), transparent 38%);
 }
 
 .dark .app-shell {
   background-image:
-    radial-gradient(circle at 10% -10%, rgba(37, 99, 235, 0.15), transparent 45%),
-    radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.12), transparent 40%),
-    linear-gradient(180deg, #050a14 0%, #091225 100%);
+    radial-gradient(circle at 8% -8%, rgba(255, 91, 64, 0.12), transparent 44%),
+    radial-gradient(circle at 100% 0%, rgba(255, 166, 77, 0.08), transparent 40%),
+    linear-gradient(180deg, #110b08 0%, #170f0b 100%);
+}
+
+/* Faint engineering grid — layer behind heroes/sections. */
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgb(var(--content) / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--content) / 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
 }
 
 .glass {
-  border: 1px solid rgb(var(--line) / 0.6);
-  background: rgb(var(--surface) / 0.7);
+  border: 1px solid rgb(var(--line) / 0.7);
+  background: rgb(var(--surface) / 0.72);
   backdrop-filter: blur(18px);
+}
+
+/* Primary surface for cards, panels, and forms across the app. */
+.premium-card {
+  border: 1px solid rgb(var(--line) / 0.9);
+  background: rgb(var(--surface) / 0.96);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Opt-in hover behaviour for interactive cards. */
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgb(var(--brand) / 0.5);
+  box-shadow: 0 24px 60px -18px rgba(214, 45, 20, 0.35), var(--shadow-card);
+}
+
+.brand-text-gradient {
+  background: linear-gradient(120deg, #d62d14 0%, #ed4426 45%, #fb7a1e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .brand-text-gradient {
+  background: linear-gradient(120deg, #ff5a3c 0%, #ff7a5c 45%, #ffa64d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Skeleton shimmer for loading states. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgb(var(--surface-2));
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--surface) / 0.65),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
 }
 
 .line-clamp-2 {
@@ -97,41 +181,49 @@ select {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-
-/* Primary surface for cards, panels, and forms across the app. */
-.premium-card {
-  border: 1px solid rgb(var(--line) / 0.9);
-  background: rgb(var(--surface) / 0.92);
-  box-shadow: var(--shadow-card);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.brand-text-gradient {
-  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 45%, #10b981 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.text-balance {
+  text-wrap: balance;
 }
 
-.dark .brand-text-gradient {
-  background: linear-gradient(135deg, #f8fafc 10%, #93c5fd 45%, #34d399 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.tabular {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hide scrollbars on horizontal scrollers (carousels, mobile nav). */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgb(var(--line-strong) / 0.7);
   border-radius: 999px;
 }
-
 .scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* Safe-area padding for mobile bottom navigation. */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.bottom-safe {
+  bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Voice-message seek bar thumb */
@@ -142,16 +234,27 @@ select {
   width: 12px;
   border-radius: 999px;
   background: #ffffff;
-  border: 2px solid rgb(var(--accent));
+  border: 2px solid rgb(var(--brand));
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(2, 8, 23, 0.3);
+  box-shadow: 0 1px 3px rgba(26, 19, 15, 0.3);
 }
-
 .voice-seek::-moz-range-thumb {
   height: 12px;
   width: 12px;
   border-radius: 999px;
   background: #ffffff;
-  border: 2px solid rgb(var(--accent));
+  border: 2px solid rgb(var(--brand));
   cursor: pointer;
+}
+
+/* Respect users who prefer reduced motion — kill non-essential animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

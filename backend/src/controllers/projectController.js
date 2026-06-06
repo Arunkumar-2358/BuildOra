@@ -1,8 +1,10 @@
 import Bid from "../models/Bid.js";
 import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
+import { getSettings } from "../services/settingsService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { setPaymentStatusForProject } from "../utils/payments.js";
+import { isPremiumProject } from "../utils/premium.js";
 import { uploadMany } from "../utils/uploadToCloudinary.js";
 import { inviteTopMatches } from "./discoveryController.js";
 
@@ -18,6 +20,11 @@ const buildGeo = (lat, lng) => {
 
 export const createProject = asyncHandler(async (req, res) => {
   const images = await uploadMany(req.files, "buildora/projects");
+  // High-budget / premium-category projects are flagged exclusive to premium contractors.
+  const settings = await getSettings();
+  const visibility = isPremiumProject(settings, { budget: req.body.budget, category: req.body.category })
+    ? "premium"
+    : "public";
   const project = await Project.create({
     customer: req.user._id,
     title: req.body.title,
@@ -29,7 +36,8 @@ export const createProject = asyncHandler(async (req, res) => {
     geo: buildGeo(req.body.lat, req.body.lng),
     category: req.body.category,
     timeline: req.body.timeline,
-    images
+    images,
+    visibility
   });
 
   // Auto-invite the best-matching contractors to bid (non-blocking on failure).
@@ -53,6 +61,13 @@ export const getProjects = asyncHandler(async (req, res) => {
   if (req.query.category) filter.category = req.query.category;
   if (req.query.city) filter.location = new RegExp(req.query.city, "i");
   if (req.query.search) filter.$text = { $search: req.query.search };
+
+  // Premium-only projects are exclusive: hide them from contractors without an
+  // active premium subscription. Customers (their own projects), premium
+  // contractors, and admins are unaffected.
+  if (req.query.mine !== "true" && req.user.role === "contractor" && !req.user.contractorProfile?.isPremium) {
+    filter.visibility = { $ne: "premium" };
+  }
 
   const [projects, total] = await Promise.all([
     Project.find(filter)

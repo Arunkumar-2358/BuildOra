@@ -1,10 +1,11 @@
-import { BarChart3, CreditCard, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import { BarChart3, CreditCard, LayoutDashboard, ShieldCheck, TrendingUp, Users } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const tabs = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/admin/approvals", label: "Approvals", icon: ShieldCheck },
   { to: "/admin/payments", label: "Payments", icon: CreditCard },
+  { to: "/admin/revenue", label: "Revenue", icon: TrendingUp },
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 }
 ];

@@ -6,6 +6,12 @@ import { scoreContractor } from "../utils/matching.js";
 
 const num = (v) => (v === undefined || v === "" ? undefined : Number(v));
 
+// Premium contractors get a ranking lift (priority placement). Applied as a
+// blended boost on the relevance "match" sort and a tie-breaker on explicit
+// sorts, so a clearly stronger non-premium match can still outrank a premium one.
+const PREMIUM_BOOST = 12;
+const premiumBoost = (c) => (c?.contractorProfile?.isPremium ? PREMIUM_BOOST : 0);
+
 // Build the contractor query filters shared by discovery endpoints.
 const buildContractorFilter = (query) => {
   const filter = { role: "contractor", status: "active" };
@@ -27,6 +33,7 @@ const decorate = (contractor, pseudoProject, distanceMeters) => {
   return {
     ...contractor,
     distanceKm: distanceMeters != null ? Math.round((distanceMeters / 1000) * 10) / 10 : result.distanceKm,
+    isPremium: Boolean(contractor.contractorProfile?.isPremium),
     matchScore: result.total,
     matchLabel: result.label,
     matchBreakdown: result.breakdown
@@ -38,10 +45,15 @@ const sortResults = (list, sort) => {
     rating: (a, b) => (b.contractorProfile?.rating || 0) - (a.contractorProfile?.rating || 0),
     experience: (a, b) => (b.contractorProfile?.experience || 0) - (a.contractorProfile?.experience || 0),
     completed: (a, b) => (b.contractorProfile?.reviewsCount || 0) - (a.contractorProfile?.reviewsCount || 0),
-    match: (a, b) => b.matchScore - a.matchScore,
+    match: (a, b) => (b.matchScore + premiumBoost(b)) - (a.matchScore + premiumBoost(a)),
     nearest: (a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)
   };
-  return by[sort] ? [...list].sort(by[sort]) : list;
+  const cmp = by[sort];
+  if (!cmp) return list;
+  // The relevance "match" sort blends in the premium lift; explicit sorts honor
+  // the chosen criterion and use premium only to break ties.
+  if (sort === "match") return [...list].sort(cmp);
+  return [...list].sort((a, b) => cmp(a, b) || premiumBoost(b) - premiumBoost(a));
 };
 
 // GET /api/users/nearby — discover contractors by location + filters.
@@ -88,6 +100,11 @@ export const getNearbyContractors = asyncHandler(async (req, res) => {
 
 // Core ranking used by the recommended endpoint and auto-invitations.
 const rankContractorsForProject = async (project, max = 8) => {
+  // Premium projects are exclusive — only premium contractors are eligible to be
+  // recommended or auto-invited (everyone else can't bid on them anyway).
+  const baseQuery = { role: "contractor", status: "active" };
+  if (project.visibility === "premium") baseQuery["contractorProfile.isPremium"] = true;
+
   let docs;
   if (project.geo?.coordinates?.length === 2) {
     docs = await User.aggregate([
@@ -96,7 +113,7 @@ const rankContractorsForProject = async (project, max = 8) => {
           near: { type: "Point", coordinates: project.geo.coordinates },
           distanceField: "distanceMeters",
           maxDistance: 300 * 1000, // 300km candidate radius
-          query: { role: "contractor", status: "active" },
+          query: baseQuery,
           spherical: true
         }
       },
@@ -104,7 +121,7 @@ const rankContractorsForProject = async (project, max = 8) => {
       { $project: { password: 0, savedProjects: 0 } }
     ]);
   } else {
-    docs = await User.find({ role: "contractor", status: "active" }).select("-savedProjects").limit(100).lean();
+    docs = await User.find(baseQuery).select("-savedProjects").limit(100).lean();
   }
 
   return docs
@@ -112,8 +129,12 @@ const rankContractorsForProject = async (project, max = 8) => {
       const { total, label, distanceKm, breakdown } = scoreContractor(project, c);
       return { contractor: c, matchScore: total, matchLabel: label, distanceKm, matchBreakdown: breakdown };
     })
-    // Rank by score, then prefer verified contractors on ties.
-    .sort((a, b) => b.matchScore - a.matchScore || Number(b.contractor.contractorProfile?.isVerified) - Number(a.contractor.contractorProfile?.isVerified))
+    // Rank by score + premium lift, then prefer verified contractors on ties.
+    .sort(
+      (a, b) =>
+        (b.matchScore + premiumBoost(b.contractor)) - (a.matchScore + premiumBoost(a.contractor)) ||
+        Number(b.contractor.contractorProfile?.isVerified) - Number(a.contractor.contractorProfile?.isVerified)
+    )
     .slice(0, max);
 };
 

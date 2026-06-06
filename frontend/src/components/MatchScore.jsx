@@ -1,9 +1,9 @@
 import { Sparkles } from "lucide-react";
 
 const tone = (score) => {
-  if (score >= 90) return "border-emerald-500/40 bg-emerald-500/10 text-success";
-  if (score >= 75) return "border-primary/40 bg-primary/10 text-accent";
-  if (score >= 60) return "border-amber-500/40 bg-amber-500/10 text-amber-400";
+  if (score >= 90) return "border-success/40 bg-success/10 text-success";
+  if (score >= 75) return "border-brand/40 bg-brand/10 text-brand";
+  if (score >= 60) return "border-spark/40 bg-spark/10 text-spark";
   return "border-line-strong bg-surface-2 text-muted";
 };
 
@@ -25,7 +25,7 @@ export const MatchRing = ({ score = 0 }) => (
         cy="18"
         r="15.5"
         fill="none"
-        stroke={score >= 90 ? "#10B981" : score >= 75 ? "#2563EB" : "#F59E0B"}
+        stroke={score >= 90 ? "#0F9D6B" : score >= 75 ? "#D62D14" : "#FB7A1E"}
         strokeWidth="3"
         strokeDasharray={`${(score / 100) * 97.4} 97.4`}
         strokeLinecap="round"
