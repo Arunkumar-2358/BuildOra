@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
-import Notification from "../models/Notification.js";
 import User from "../models/User.js";
+import { createNotification } from "../services/notificationService.js";
 
 const onlineUsers = new Map();
 
@@ -26,6 +26,7 @@ export const attachSocketHandlers = (io) => {
   io.on("connection", (socket) => {
     const userId = socket.user._id.toString();
     onlineUsers.set(userId, socket.id);
+    // Join a personal room so notifications can be pushed to this user
     socket.join(userId);
     io.emit("presence:update", Array.from(onlineUsers.keys()));
 
@@ -74,8 +75,10 @@ export const attachSocketHandlers = (io) => {
         await chat.save();
 
         const kindLabel = type === "voice" ? "voice message" : type === "file" ? "file" : "message";
-        await Notification.create({
-          user: receiverId,
+
+        // Persist notification + emit real-time push via notificationService
+        await createNotification({
+          userId: receiverId,
           type: "message",
           title: "New message",
           body: `${socket.user.name} sent you a ${kindLabel}.`,
@@ -88,11 +91,6 @@ export const attachSocketHandlers = (io) => {
         ]);
 
         io.to(chatId).emit("message:new", populated);
-        io.to(receiverId).emit("notification:new", {
-          type: "message",
-          title: "New message",
-          link: `/chat/${chat._id}`
-        });
         callback?.({ ok: true, message: populated });
       } catch (error) {
         callback?.({ ok: false, message: error.message });

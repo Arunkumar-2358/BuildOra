@@ -44,7 +44,8 @@ const contractorProfileSchema = new mongoose.Schema(
     subscriptionTier: { type: String, enum: ["free", "pro", "premium"], default: "free" },
     subscriptionStatus: {
       type: String,
-      enum: ["none", "active", "expired", "cancelled"],
+      // "scheduled" = a future plan is queued; current tier is still free/expired.
+      enum: ["none", "active", "scheduled", "expired", "cancelled"],
       default: "none"
     },
     subscriptionExpiresAt: Date,
@@ -75,7 +76,12 @@ const userSchema = new mongoose.Schema(
       publicId: String
     },
     contractorProfile: contractorProfileSchema,
-    savedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }]
+    savedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+
+    // Password reset — hashed token + expiry stored server-side.
+    // select: false so these are never leaked in normal user queries.
+    passwordResetToken: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false }
   },
   { timestamps: true }
 );

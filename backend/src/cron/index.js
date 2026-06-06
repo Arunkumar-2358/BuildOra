@@ -1,11 +1,16 @@
 import cron from "node-cron";
 import { materializeMonthlyReport } from "../services/revenueService.js";
-import { expireSubscriptions, sendRenewalReminders } from "../services/subscriptionService.js";
+import {
+  activateScheduledSubscriptions,
+  expireSubscriptions,
+  sendRenewalReminders
+} from "../services/subscriptionService.js";
 
 // Named jobs — each is a pure async function so it can run on a schedule (here)
 // or be triggered via POST /api/cron/:job on serverless.
 const JOBS = {
-  "subscription-expiry": expireSubscriptions,
+  "subscription-expiry": expireSubscriptions,      // expire + activate scheduled in one pass
+  "activate-scheduled": activateScheduledSubscriptions, // standalone activation (useful after seed)
   "renewal-reminders": sendRenewalReminders,
   "revenue-rollup": () => materializeMonthlyReport()
 };

@@ -1,6 +1,6 @@
 import Bid from "../models/Bid.js";
-import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
+import { createNotification } from "../services/notificationService.js";
 import { assertCanBid, consumeFreeBid } from "../services/subscriptionService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { upsertPaymentForBid } from "../utils/payments.js";
@@ -100,13 +100,26 @@ export const updateBidStatus = asyncHandler(async (req, res) => {
     await upsertPaymentForBid({ project: bid.project, bid });
   }
 
-  await Notification.create({
-    user: bid.contractor,
+  // Notify the contractor of the decision
+  const isAccepted = req.body.status === "accepted";
+  await createNotification({
+    userId: bid.contractor,
     type: "bid-status",
     title: `Quotation ${bid.status}`,
-    body: `Your quotation for ${bid.project.title} was ${bid.status}.`,
+    body: `Your quotation for "${bid.project.title}" was ${bid.status}.`,
     link: `/projects/${bid.project._id}`
   });
+
+  // When accepted: also notify the customer that a contractor is starting
+  if (isAccepted) {
+    await createNotification({
+      userId: bid.project.customer,
+      type: "project",
+      title: "Contractor accepted — project awarded",
+      body: `Your project "${bid.project.title}" has been awarded. The contractor will be in touch soon.`,
+      link: `/projects/${bid.project._id}`
+    });
+  }
 
   res.json(bid);
 });

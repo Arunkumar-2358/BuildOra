@@ -1,6 +1,6 @@
 import Bid from "../models/Bid.js";
-import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
+import { createNotification } from "../services/notificationService.js";
 import { getSettings } from "../services/settingsService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { setPaymentStatusForProject } from "../utils/payments.js";
@@ -116,11 +116,29 @@ export const updateProjectStatus = asyncHandler(async (req, res) => {
     throw new Error("Only the project owner can update status");
   }
 
+  const prevStatus = project.status;
   project.status = req.body.status;
   await project.save();
 
   // Settle the linked payment when the project reaches a terminal state.
   await setPaymentStatusForProject(project._id, project.status);
+
+  // Notify the awarded contractor when work is marked started or completed
+  if (["in_progress", "completed"].includes(req.body.status) && prevStatus !== req.body.status) {
+    const acceptedBid = await Bid.findOne({ project: project._id, status: "accepted" });
+    if (acceptedBid) {
+      const isCompleted = req.body.status === "completed";
+      await createNotification({
+        userId: acceptedBid.contractor,
+        type: "project",
+        title: isCompleted ? "Project marked as completed" : "Work started",
+        body: isCompleted
+          ? `"${project.title}" has been marked complete by the customer.`
+          : `"${project.title}" is now marked as in progress.`,
+        link: `/projects/${project._id}`
+      });
+    }
+  }
 
   res.json(project);
 });
@@ -135,12 +153,13 @@ export const saveProject = asyncHandler(async (req, res) => {
   res.json({ savedProjects: req.user.savedProjects });
 });
 
+// Notify project owner of a new bid — exported so bidController can call it.
 export const notifyProjectOwner = async ({ project, bid }) => {
-  await Notification.create({
-    user: project.customer,
+  await createNotification({
+    userId: project.customer,
     type: "bid",
     title: "New quotation received",
-    body: `A contractor submitted a quotation for ${project.title}.`,
+    body: `A contractor submitted a quotation for "${project.title}".`,
     link: `/projects/${project._id}?bid=${bid._id}`
   });
 };

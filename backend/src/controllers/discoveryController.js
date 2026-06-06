@@ -1,6 +1,6 @@
-import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
 import User from "../models/User.js";
+import { createNotification } from "../services/notificationService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { scoreContractor } from "../utils/matching.js";
 
@@ -167,8 +167,8 @@ export const inviteTopMatches = async (project, max = 5) => {
   const ranked = await rankContractorsForProject(project, max);
   await Promise.all(
     ranked.map(({ contractor, matchScore }) =>
-      Notification.create({
-        user: contractor._id,
+      createNotification({
+        userId: contractor._id,
         type: "project",
         title: "You're a great match for a new project",
         body: `"${project.title}" in ${project.location} matches your profile (${matchScore}% match). Submit a bid!`,

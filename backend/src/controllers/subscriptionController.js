@@ -19,8 +19,11 @@ export const getPlans = asyncHandler(async (req, res) => {
 
 // GET /api/subscriptions/me — current standing for the contractor's dashboard.
 export const getMySubscription = asyncHandler(async (req, res) => {
-  const [active, settings, history] = await Promise.all([
+  const [active, scheduled, settings, history] = await Promise.all([
     getActiveSubscription(req.user._id),
+    ContractorSubscription.findOne({ contractor: req.user._id, status: "scheduled" })
+      .sort({ startDate: 1 })
+      .populate("plan", "name code tier durationMonths"),
     getSettings(),
     ContractorSubscription.find({ contractor: req.user._id })
       .sort({ createdAt: -1 })
@@ -38,6 +41,7 @@ export const getMySubscription = asyncHandler(async (req, res) => {
     freeBidsUsed: profile.freeBidsUsed || 0,
     freeBidQuota: settings.freeBidQuota,
     activeSubscription: active,
+    scheduledSubscription: scheduled || null,
     history
   });
 });

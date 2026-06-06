@@ -1,4 +1,4 @@
-import { CalendarClock, CreditCard, Crown, Sparkles, Zap } from "lucide-react";
+import { CalendarClock, CreditCard, Crown, Sparkles, Timer, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ErrorState, StatCard, StatusBadge } from "../components/admin/AdminPrimitives";
@@ -27,7 +27,7 @@ export const MySubscription = () => {
   if (error) return <main className="mx-auto max-w-5xl px-4 py-10"><ErrorState message={error} onRetry={load} /></main>;
   if (!data) return <main className="mx-auto max-w-5xl px-4 py-10 text-muted">Loading…</main>;
 
-  const { tier, status, remainingDays, expiresAt, freeBidsUsed, freeBidQuota, isPremium, history } = data;
+  const { tier, status, remainingDays, expiresAt, freeBidsUsed, freeBidQuota, isPremium, history, scheduledSubscription } = data;
   const isActive = status === "active" && tier !== "free";
   const left = Math.max((freeBidQuota || 0) - (freeBidsUsed || 0), 0);
   const captured = txns.filter((t) => t.status === "captured").length;
@@ -74,6 +74,29 @@ export const MySubscription = () => {
             </div>
           </div>
           <Button as={Link} to="/premium" variant="secondary">Explore Premium</Button>
+        </div>
+      )}
+
+      {scheduledSubscription && (
+        <div className="premium-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-5 ring-1 ring-accent/30">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10 text-accent">
+              <Timer className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="font-extrabold text-content">
+                {titleCase(scheduledSubscription.tier)} plan queued
+              </p>
+              <p className="text-sm text-muted">
+                Activates on {shortDate(scheduledSubscription.startDate)} — when your current plan expires.
+                No paid time will be lost.
+              </p>
+            </div>
+          </div>
+          <div className="text-right text-sm text-muted">
+            <p className="font-bold text-content">{scheduledSubscription.plan?.name || scheduledSubscription.planCode}</p>
+            <p>until {shortDate(scheduledSubscription.endDate)}</p>
+          </div>
         </div>
       )}
 
