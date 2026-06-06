@@ -6,6 +6,7 @@ import { corsOptions } from "./config/cors.js";
 import { connectDB } from "./config/db.js";
 import { registerCron } from "./cron/index.js";
 import { attachSocketHandlers } from "./sockets/chatSocket.js";
+import { setIO } from "./sockets/ioInstance.js";
 import { ensureAdmin } from "./utils/ensureAdmin.js";
 
 dotenv.config();
@@ -19,6 +20,8 @@ registerCron();
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });
 
+// Register io singleton so notificationService can emit from anywhere (crons, services).
+setIO(io);
 // Expose io to controllers so REST endpoints can broadcast in real time.
 app.set("io", io);
 attachSocketHandlers(io);

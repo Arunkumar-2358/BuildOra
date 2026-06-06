@@ -11,6 +11,9 @@ const named = (factory, name) => lazy(() => factory().then((m) => ({ default: m[
 
 const LandingPage = named(() => import("./pages/LandingPage"), "LandingPage");
 const AuthPage = named(() => import("./pages/AuthPage"), "AuthPage");
+const ForgotPasswordPage = named(() => import("./pages/ForgotPasswordPage"), "ForgotPasswordPage");
+const ResetPasswordPage = named(() => import("./pages/ResetPasswordPage"), "ResetPasswordPage");
+const NotificationsPage = named(() => import("./pages/NotificationsPage"), "NotificationsPage");
 const Dashboard = named(() => import("./pages/Dashboard"), "Dashboard");
 const BrowseProjects = named(() => import("./pages/BrowseProjects"), "BrowseProjects");
 const ProjectDetails = named(() => import("./pages/ProjectDetails"), "ProjectDetails");
@@ -51,6 +54,8 @@ export default function App() {
         {/* Auth — full-screen, no app chrome */}
         <Route path="login" element={<AuthPage mode="login" />} />
         <Route path="register" element={<AuthPage mode="register" />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="reset-password/:token" element={<ResetPasswordPage />} />
 
         {/* Authenticated app — sidebar / bottom-nav shell */}
         <Route element={<ProtectedRoute />}>
@@ -62,6 +67,7 @@ export default function App() {
             <Route path="chat" element={<ChatPage />} />
             <Route path="chat/:chatId" element={<ChatPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
 
             <Route element={<ProtectedRoute roles={["customer"]} />}>
               <Route path="post-project" element={<PostProject />} />

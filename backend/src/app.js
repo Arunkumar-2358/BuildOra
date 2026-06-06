@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoutes.js";
 import bidRoutes from "./routes/bidRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import cronRoutes from "./routes/cronRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import revenueRoutes from "./routes/revenueRoutes.js";
@@ -45,7 +46,7 @@ app.get("/api", (req, res) => {
     service: "buildora-api",
     status: "running",
     frontend: process.env.CLIENT_URL || "http://localhost:5173",
-    routes: ["/api/auth", "/api/projects", "/api/bids", "/api/chats", "/api/users", "/api/reviews", "/api/admin", "/api/subscriptions", "/api/revenue", "/api/cron", "/api/webhooks"]
+    routes: ["/api/auth", "/api/projects", "/api/bids", "/api/chats", "/api/users", "/api/reviews", "/api/admin", "/api/subscriptions", "/api/revenue", "/api/cron", "/api/webhooks", "/api/notifications"]
   });
 });
 
@@ -59,6 +60,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/revenue", revenueRoutes);
 app.use("/api/cron", cronRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

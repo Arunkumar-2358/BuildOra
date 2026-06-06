@@ -87,6 +87,7 @@ export const SubscriptionPlans = () => {
             onSubscribe={subscribe}
             busy={busy === plan.code}
             current={Boolean(me && me.tier === plan.tier && me.status === "active")}
+            queued={Boolean(me?.scheduledSubscription?.tier === plan.tier)}
             featured={plan.tier === "premium"}
           />
         ))}

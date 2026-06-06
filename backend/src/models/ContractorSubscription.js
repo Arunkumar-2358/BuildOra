@@ -18,7 +18,8 @@ const contractorSubscriptionSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "active", "expired", "cancelled"],
+      // "scheduled" = paid, queued to start after the current active plan expires (downgrade protection).
+      enum: ["pending", "active", "scheduled", "expired", "cancelled"],
       default: "pending"
     },
     startDate: { type: Date, default: Date.now },

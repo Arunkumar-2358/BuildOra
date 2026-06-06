@@ -5,7 +5,7 @@ import { currency } from "../utils/format";
 import { Button } from "./Button";
 
 // Reusable pricing card used on the Plans and Premium-upgrade pages.
-export const PlanCard = ({ plan, onSubscribe, busy, current, featured }) => {
+export const PlanCard = ({ plan, onSubscribe, busy, current, queued, featured }) => {
   const perMonth = rupees(plan.pricePaise) / plan.durationMonths;
   const savings = rupees(plan.basePricePaise - plan.pricePaise);
   const isPremium = plan.tier === "premium";
@@ -56,10 +56,10 @@ export const PlanCard = ({ plan, onSubscribe, busy, current, featured }) => {
         className="mt-6 w-full"
         size="lg"
         variant={featured ? "primary" : "secondary"}
-        disabled={busy || current}
+        disabled={busy || current || queued}
         onClick={() => onSubscribe(plan)}
       >
-        {current ? "Current plan" : busy ? "Processing…" : `Subscribe — ${currency(rupees(plan.pricePaise))}`}
+        {current ? "Current plan" : queued ? "Queued — activates after current plan" : busy ? "Processing…" : `Subscribe — ${currency(rupees(plan.pricePaise))}`}
       </Button>
     </div>
   );

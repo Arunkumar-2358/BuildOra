@@ -15,6 +15,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { cn } from "../lib/cn";
 import { layoutSpring } from "../lib/motion";
+import { NotificationBell } from "./NotificationBell";
 import { PageTransition } from "./PageTransition";
 import { Avatar } from "./ui/Avatar";
 import { Logo, LogoMark } from "./ui/Logo";
@@ -145,6 +146,7 @@ export const AppLayout = () => {
           </div>
           <div className={cn("flex items-center gap-2", collapsed && "flex-col")}>
             <ThemeToggle />
+            <NotificationBell align="left" placement="top" />
             <Tooltip label="Log out" side="top">
               <button
                 type="button"
@@ -177,6 +179,7 @@ export const AppLayout = () => {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <NotificationBell />
           <Link to="/profile" aria-label="Profile">
             <Avatar name={user?.name} src={user?.avatar} size="sm" />
           </Link>

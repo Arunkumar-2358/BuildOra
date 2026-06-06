@@ -245,6 +245,14 @@ export const AuthPage = ({ mode = "login" }) => {
                 {!loading && <ArrowRight className="h-4 w-4" />}
               </Button>
 
+              {!isRegister && (
+                <p className="text-center text-sm text-muted">
+                  <Link className="font-semibold text-brand hover:underline" to="/forgot-password">
+                    Forgot your password?
+                  </Link>
+                </p>
+              )}
+
               <p className="text-center text-sm text-muted">
                 {isRegister ? "Already have an account? " : "New to BuildOra? "}
                 <Link className="font-bold text-brand hover:underline" to={isRegister ? "/login" : "/register"}>

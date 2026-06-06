@@ -28,14 +28,17 @@ export const StatCard = ({ icon: Icon, label, value, sub, tone = "accent" }) => 
 // Colored status pill, shared across approvals / payments / users / billing.
 const badgeTones = {
   pending: "bg-spark/10 text-spark",
+  scheduled: "bg-accent/10 text-accent",
   approved: "bg-success/10 text-success",
   active: "bg-success/10 text-success",
   completed: "bg-success/10 text-success",
   captured: "bg-success/10 text-success",
+  expired: "bg-surface-2 text-muted",
   rejected: "bg-brand/10 text-brand",
   suspended: "bg-brand/10 text-brand",
   refunded: "bg-brand/10 text-brand",
   failed: "bg-brand/10 text-brand",
+  cancelled: "bg-surface-2 text-muted",
   default: "bg-surface-2 text-muted"
 };
 
